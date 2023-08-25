@@ -7,8 +7,8 @@ const User= require("../models/User.js");
     console.log(req.body)
   try {
     const {
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       email,
       password,
     } = req.body;
@@ -17,11 +17,13 @@ const User= require("../models/User.js");
     const passwordHash = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      firstName,
-      lastName,
+      first_name,
+      last_name,
       email,
+      status:"active",
       password: passwordHash,
     });
+    delete newUser["password"];
     const savedUser = await newUser.save();
     res.status(201).json(savedUser);
   } catch (err) {
@@ -43,7 +45,7 @@ const login = async (req, res) => {
     const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET,{
         expiresIn: "6h",
       });
-    delete user.password;
+    delete user["password"];
     res.status(200).json({ token, user });
   } catch (err) {
     res.status(500).json({ error: err.message });
