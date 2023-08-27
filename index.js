@@ -15,7 +15,7 @@ const helmet =require("helmet");
 app.use(helmet());
 const authRoutes = require("./routes/auth.js");
 const assetRoutes = require("./routes/asset.js");
-const categoryRoutes = require("./routes/asset.js");
+const categoryRoutes = require("./routes/category.js");
 var corsOptions = {
   credentials: true,
   origin: true
