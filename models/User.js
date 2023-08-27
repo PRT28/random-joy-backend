@@ -2,17 +2,11 @@ const mongoose = require("mongoose");
 const { Schema, model } = mongoose;
 
 const UserSchema = new Schema({
-  first_name: {
+  username: {
     type: String,
     required: true,
     min: 2,
-    max: 50,
-  },
-  last_name: {
-    type: String,
-    required: true,
-    min: 2,
-    max: 50,
+    max: 100,
   },
   email: {
     type: String,
@@ -26,10 +20,20 @@ const UserSchema = new Schema({
     min: 5,
   },
   status:{
-    type:String
+    type: Boolean,
+    required: true
   },
   zip_code:{
-    type:String
+    type:String,
+    required: true
+  },
+  gender: {
+    type: String,
+    required: true
+  },
+  role: {
+    type: Number,
+    required: true
   }
 },
 { timestamps: true }

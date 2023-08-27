@@ -7,21 +7,25 @@ const User= require("../models/User.js");
     console.log(req.body)
   try {
     const {
-      first_name,
-      last_name,
+      username,
       email,
       password,
+      gender,
+      zip_code,
+      role
     } = req.body;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
 
     const newUser = new User({
-      first_name,
-      last_name,
+      username,
       email,
-      status:"active",
+      status:true,
       password: passwordHash,
+      gender,
+      zip_code,
+      role
     });
     delete newUser["password"];
     const savedUser = await newUser.save();
@@ -42,8 +46,8 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
-    const token = jwt.sign({ id: user._id }, process.env.JWT_SECRET,{
-        expiresIn: "6h",
+    const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET,{
+        expiresIn: "24h",
       });
     delete user["password"];
     res.status(200).json({ token, user });
