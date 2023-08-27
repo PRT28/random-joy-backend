@@ -27,7 +27,9 @@ const assetSchema = new  mongoose.Schema(
       type: Map,
       of: Number,
     default:{}},
-
+    is_joy:{
+      type: Boolean
+    },
     thumbnail: String,
     description: String,
     isfeature: {

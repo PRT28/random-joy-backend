@@ -15,6 +15,7 @@ const helmet =require("helmet");
 app.use(helmet());
 const authRoutes = require("./routes/auth.js");
 const assetRoutes = require("./routes/asset.js");
+const categoryRoutes = require("./routes/asset.js");
 var corsOptions = {
   credentials: true,
   origin: true
@@ -27,6 +28,7 @@ const CONNECTION_URL = process.env.DB_URL;
 const PORT = process.env.Port || 4001;
 app.use("/auth", authRoutes);
 app.use("/asset",assetRoutes)
+app.use("/category",categoryRoutes)
 
 
 mongoose

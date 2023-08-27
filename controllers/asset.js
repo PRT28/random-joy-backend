@@ -1,36 +1,58 @@
 const Asset  =require( "../models/Asset.js");
 const User =require("../models/User.js");
-const Like=require("../models/Likes.js")
-const Comment = require("../models/Comment.js")
+const Category =require("../models/Category.js");
+
 const cloudinary = require("../configs/cloudinary.js")
 
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { user_id, description,keyword_name,category_name,asset_type} = req.body;
-    
+    const { user_id, description,keyword_name,category_name,asset_type,is_joy} = req.body;
+    const category=await Category.find({category_title:category_name});
+    if(!category)
+    {
+      res.status(400).json({ message: "Invalid Category."});
+    }
     const user = await User.findById(user_id);
-    console.log(req)
+   
     if(!["picture","video","gif"].includes(asset_type))
     {
       res.status(500).json({ message: "invalid Asset Type" })
     }
     const upload = await cloudinary.v2.uploader.upload(req.file.path);
+    if(is_joy==true && user.role==0)
+    {
+      const newPost = new Asset({
+        user_id,
+        description,
+        category_name,
+        keyword_name,
+        url:upload.secure_url,
+        is_joy,
+        asset_type,
+      });
+      await newPost.save();
+      res.status(201).json(newPost);
+    }
+    else if(is_joy==true && user.role!=0)
+    {
+      res.status(400).json({ message: "Only Admins Are allowed to add joys." });
+    }
+    else{
     
-    
- 
-    const newPost = new Asset({
-      user_id,
-      description,
-      category_name,
-      keyword_name,
-      url:upload.secure_url,
-      likes:{},
-      asset_type
-    });
-    await newPost.save();
-    const assets = await Asset.find();
-    res.status(201).json(assets);
+      const newPost = new Asset({
+        user_id,
+        description,
+        category_name,
+        keyword_name,
+        url:upload.secure_url,
+        likes:{},
+        asset_type
+      });
+      await newPost.save();
+      const assets = await Asset.find();
+      res.status(201).json(assets);
+    }
   } catch (err) {
     res.status(409).json({ message: err.message });
   }
