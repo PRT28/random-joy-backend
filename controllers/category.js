@@ -1,6 +1,9 @@
 const Category = require("../models/Category");
 const User = require("../models/User.js");
 const cloudinary = require("../configs/cloudinary.js")
+
+
+
 /* CREATE */
 const createCategory = async (req, res) => {
   try {
@@ -10,33 +13,24 @@ const createCategory = async (req, res) => {
       category_description
     } = req.body;
     const user = await User.findById(user_id);
-    
-    console.log(user.role)
     if(!user || user.role)
     {
       res.status(400).json({ message: "Only Admins Are allowed to add Category." });
     }
     if (user.role == 0){
-      console.log(1)
-      
-      console.log(1)
       const upload = await cloudinary.v2.uploader.upload(req.file.path);
       const newCategory = new Category({
         category_title,
         category_thumbnail: upload.secure_url,
         category_description,
       });
-      console.log(1)
-      await newCategory.save();
-      res.status(201).json(newCategory);
-
+        await newCategory.save();
+        res.status(201).json(newCategory);
     } else{
       res.status(400).json({ message: "Only Admins Are allowed to add Category." });
     }
-  } catch {
-    (err) => {
+  } catch(err) {    
       res.status(500).json({ error: err.message });
-    };
   }
 };
 /* READ */
