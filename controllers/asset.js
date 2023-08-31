@@ -1,26 +1,32 @@
 const Asset  =require( "../models/Asset.js");
 const User =require("../models/User.js");
 const Category =require("../models/Category.js");
-
+const Asset_type= require("../models/Asset_type.js");
 const cloudinary = require("../configs/cloudinary.js")
 
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { user_id, description,keyword_name,category_name,asset_type,is_joy} = req.body;
+    const { user_id, description,keyword_name,category_name,asset_type,asset_category} = req.body;
     const category=await Category.find({category_title:category_name});
     if(!category)
     {
       res.status(400).json({ message: "Invalid Category."});
     }
     const user = await User.findById(user_id);
-   
-    if(!["picture","video","gif"].includes(asset_type))
+    const assettype=Asset_type.findOne({ name:asset_type.toLowerCase()})
+    if(!asset)
     {
       res.status(500).json({ message: "invalid Asset Type" })
     }
-    const upload = await cloudinary.v2.uploader.upload(req.file.path);
-    if(is_joy==true && user.role==0)
+    let upload=null;
+    if(asset_category==0){
+
+       upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
+    }else{
+      upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joyOrWack"});
+    }
+    if(asset_category==0)
     {
       const newPost = new Asset({
         user_id,
@@ -28,30 +34,26 @@ const cloudinary = require("../configs/cloudinary.js")
         category_id:category.id,
         keyword_name,
         url:upload.secure_url,
-        is_joy,
-        asset_type,
+        asset_category,
+        asset_type:assettype.id
       });
       await newPost.save();
       res.status(201).json(newPost);
     }
-    else if(is_joy==true && user.role!=0)
+    else if(asset_category!=0 && user.role==2)
     {
-      res.status(400).json({ message: "Only Admins Are allowed to add joys." });
+      res.status(400).json({ message: "Only Admins Are allowed to add joys and wack." });
     }
     else{
     
       const newPost = new Asset({
         user_id,
-        description,
         category_name,
-        keyword_name,
         url:upload.secure_url,
-        likes:{},
-        asset_type
+        asset_type:assettype.id
       });
-      await newPost.save();
-      const assets = await Asset.find();
-      res.status(201).json(assets);
+     const joyOrWack= await newPost.save();
+      res.status(201).json(joyOrWack);
     }
   } catch (err) {
     res.status(409).json({ message: err.message });

@@ -16,9 +16,6 @@ const assetSchema = new  mongoose.Schema(
       type: Array,
       of:String
     },
-     name: {
-      type: String
-    },
     url: {
       type: String,
       required: true,
@@ -32,6 +29,10 @@ const assetSchema = new  mongoose.Schema(
     asset_category:{
       type: Number,
       required: true
+    },
+    asset_type:{
+      type:mongoose.Schema.Types.ObjectId,ref:"asset_type",
+      required: true,
     },
     like_count:{type:Number,default:0},
     share_count:{type:Number,default:0},
