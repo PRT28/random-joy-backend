@@ -28,9 +28,9 @@ app.use(cookieParser());
 const CONNECTION_URL = process.env.DB_URL;
 const PORT = process.env.Port || 4001;
 app.use("/auth", authRoutes);
-app.use("/asset",assetRoutes)
-app.use("/category",categoryRoutes)
-app.use("/assettype",assetTypeRoutes)
+app.use("/asset",assetRoutes);
+app.use("/category",categoryRoutes);
+app.use("/assettype",assetTypeRoutes);
 
 
 mongoose
