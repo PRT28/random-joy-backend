@@ -5,7 +5,7 @@ const User =require("../models/User.js")
 /* CREATE */
 const createAssetType = async (req, res) => {
     try {
-      const {user_id,name}=req.body;
+      let {user_id,name}=req.body;
       name=name.toLowerCase()
       const user = await User.findById(user_id);
       console.log(user)
