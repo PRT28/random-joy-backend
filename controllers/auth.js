@@ -58,18 +58,13 @@ const login = async (req, res) => {
   }
 };
 
-// const logout = async (req, res) => {
-//   try {
-   
-//     const token = req.get("Authorization");
-//     var decodedClaims = jwt.verify(token, process.env.JWT_SECRET);
-//     console.log(decodedClaims)
-    
-//     res.status(200).json({ Hiii: 'hiii' });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
+const getAllUser = async (req, res) => {
+  try {
+    const user = await User.find({});
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
 
-
-module.exports={register,login}
+module.exports={register,login,getAllUser}
