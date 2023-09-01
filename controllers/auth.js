@@ -54,4 +54,14 @@ const login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
-module.exports={register,login}
+
+const getAllUser = async (req, res) => {
+  try {
+    const user = await User.find({});
+    res.status(200).json(user);
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+};
+
+module.exports={register,login,getAllUser}
