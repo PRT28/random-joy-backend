@@ -4,8 +4,6 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-// const User = require("./models/User");
-// const Post = require("./models/Post");
 const bcrypt = require("bcryptjs");
 const app = express();
 const jwt = require("jsonwebtoken");
@@ -32,10 +30,7 @@ app.use("/auth", authRoutes);
 app.use("/asset",assetRoutes)
 app.use("/category",categoryRoutes)
 app.use("/assettype",assetTypeRoutes)
-app.user("/puzzle", puzzleRoutes);
-app.use("/assettype",assetTypeRoutes);
-
-
+app.use("/puzzle", puzzleRoutes);
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>

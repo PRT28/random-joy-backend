@@ -10,7 +10,7 @@ const  verifyToken  = require( "../middleware/auth.js");
 const router = express.Router();
 
 router.post('/add', verifyToken, addPuzzle);
-router.post('/update', verifyToken, updatePuzzle),
+router.put('/update', verifyToken, updatePuzzle),
 router.post('/checkAnswer', verifyToken, checkAnswer)
 
 module.exports = router;
