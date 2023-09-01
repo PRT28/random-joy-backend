@@ -33,6 +33,7 @@ app.use("/asset",assetRoutes)
 app.use("/category",categoryRoutes)
 app.use("/assettype",assetTypeRoutes)
 app.user("/puzzle", puzzleRoutes);
+app.use("/assettype",assetTypeRoutes);
 
 
 mongoose
