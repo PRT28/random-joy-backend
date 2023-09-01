@@ -23,7 +23,6 @@ const createCategory = async (req, res) => {
     if (user.role == 0) {
       const newCategory = new Category({
         category_title,
-        category_thumbnail: upload.secure_url,
         category_description,
       });
         await newCategory.save();
