@@ -1,6 +1,7 @@
 const mongoose = require("mongoose");
+const { Schema, model } = mongoose;
 
-const puzzleSchema = new mongoose.Schema({
+const PuzzleSchema = new Schema({
     question: {
         type: String,
         required: true,
@@ -28,3 +29,7 @@ const puzzleSchema = new mongoose.Schema({
 }, {
     timestamps: true,
 })
+
+const PuzzleModel = model("puzzle", PuzzleSchema);
+
+module.exports = PuzzleModel;
