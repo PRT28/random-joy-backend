@@ -27,8 +27,8 @@ const User= require("../models/User.js");
       role:1
     });
     const savedUser = await newUser.save();
-    delete savedUser["password"];
-    res.status(201).json(savedUser);
+    const {password: pwd, ...filteredUser} = savedUser 
+    res.status(201).json(filteredUser);
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -45,7 +45,10 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
-    const token = jwt.sign({ id: user._id}, process.env.JWT_SECRET,{
+    const token = jwt.sign({ 
+      id: user._id,
+      isAcive: true,
+      role: user.role}, process.env.JWT_SECRET,{
         expiresIn: "24h",
       });
     delete user["password"];
@@ -54,4 +57,19 @@ const login = async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 };
+
+// const logout = async (req, res) => {
+//   try {
+   
+//     const token = req.get("Authorization");
+//     var decodedClaims = jwt.verify(token, process.env.JWT_SECRET);
+//     console.log(decodedClaims)
+    
+//     res.status(200).json({ Hiii: 'hiii' });
+//   } catch (err) {
+//     res.status(500).json({ error: err.message });
+//   }
+// };
+
+
 module.exports={register,login}

@@ -20,8 +20,7 @@ const createCategory = async (req, res) => {
     {
       res.status(400).json({ message: "Only Admins Are allowed to add Category." });
     }
-    if (user.role == 0){
-      const upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"category"});
+    if (user.role == 0) {
       const newCategory = new Category({
         category_title,
         category_thumbnail: upload.secure_url,
