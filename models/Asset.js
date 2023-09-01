@@ -5,17 +5,16 @@ const mongoose = require("mongoose");
 const assetSchema = new  mongoose.Schema(
   {
     user_id: {
-      type:mongoose.Schema.Types.ObjectId,ref:"user",
+    type:mongoose.Schema.Types.ObjectId,ref:"user",
     required: true,
   },
-    user_role: {
-      type: String
-    },
-    category_name: {
-      type: String
+    category_id: {
+    type:mongoose.Schema.Types.ObjectId,ref:"category",
+    required: true,
     },
     keyword_name: {
-      type: String
+      type: Array,
+      of:String
     },
      name: {
       type: String
@@ -23,21 +22,16 @@ const assetSchema = new  mongoose.Schema(
     url: {
       type: String,
       required: true,
-    },likes: {
+    },
+    likes:{
       type: Map,
       of: Number,
-    default:{}},
-    is_joy:{
-      type: Boolean
-    },
-    thumbnail: String,
+    default:{}
+  },
     description: String,
-    isfeature: {
-      type: String,
-    },
-    asset_type: {
-      type: String,
-      required: true,
+    asset_category:{
+      type: Number,
+      required: true
     },
     like_count:{type:Number,default:0},
     share_count:{type:Number,default:0},

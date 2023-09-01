@@ -12,7 +12,6 @@ const User= require("../models/User.js");
       password,
       gender,
       zip_code,
-      role
     } = req.body;
 
     const salt = await bcrypt.genSalt();
@@ -25,10 +24,10 @@ const User= require("../models/User.js");
       password: passwordHash,
       gender,
       zip_code,
-      role
+      role:1
     });
-    delete newUser["password"];
     const savedUser = await newUser.save();
+    delete savedUser["password"];
     res.status(201).json(savedUser);
   } catch (err) {
     res.status(500).json({ error: err.message });

@@ -25,7 +25,7 @@ const cloudinary = require("../configs/cloudinary.js")
       const newPost = new Asset({
         user_id,
         description,
-        category_name,
+        category_id:category.id,
         keyword_name,
         url:upload.secure_url,
         is_joy,
@@ -136,6 +136,48 @@ const dislikeAsset = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
+const updateAsset = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const { user_id } = req.body;
+    const asset = await Asset.findById(id);
+    if(!asset){
+      res.status(404).json({ message:"Asset doesnot exist."});
+    }
+    if (user_id==asset.user_id) {
+      let picpath=asset.url
+      if(req.file)
+      {
+        const upload = await cloudinary.v2.uploader.upload(req.file.path);
+        const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
+        const deleted = await cloudinary.v2.uploader.destroy(
+          getPublicId(picpath)
+          );
+          picpath=upload.secure_url;
+      }
+      await asset.updateOne({
+        title,
+        summary,
+        content,
+        cover: newPath,
+      });
+      const allasset = await Asset.find({});
+      res.status(200).json(allasset);
+      
+    } else {
+      res.status(403).json({"message":"You are not the author of asset"})
+    }
+
+
+
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+
+}
+
+
+
   /* DELETE POST */
   const deleteAsset = async (req, res) => {
     try {
@@ -147,9 +189,9 @@ const dislikeAsset = async (req, res) => {
       }
       const oldUrl = asset.url;
       const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
-      const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
       if (user_id==asset.user_id) {
-         await asset.deleteOne()
+        await asset.deleteOne()
+        const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
         const allasset = await Asset.find({});
         res.status(200).json(allasset);
         
