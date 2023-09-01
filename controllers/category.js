@@ -12,24 +12,19 @@ const createCategory = async (req, res) => {
       category_title,
       category_description
     } = req.body;
-    const user = await User.findById(user_id);
-    if(!req.file){
-      res.status(400).json({ message: "Image is required."});
-    }
-    if(!user || user.role)
+    const user = req.user;
+    if(user.role==2)
     {
-      res.status(400).json({ message: "Only Admins Are allowed to add Category." });
+      return res.status(400).json({ message: "Only Admins Are allowed to add Category." });
     }
-    if (user.role == 0) {
+    else{
       const newCategory = new Category({
         category_title,
         category_description,
       });
         await newCategory.save();
         res.status(201).json(newCategory);
-    } else{
-      res.status(400).json({ message: "Only Admins Are allowed to add Category." });
-    }
+    } 
   } catch(err) {    
       res.status(500).json({ error: err.message });
   }
@@ -37,7 +32,6 @@ const createCategory = async (req, res) => {
 /* READ */
 const getAllCategory = async (req, res) => {
     try {
-      
       const category = await Category.find();
       res.status(200).json(category);
     } catch (err) {
@@ -63,7 +57,7 @@ const updateCategory = async (req, res) => {
       category_title,
       category_description
     } = req.body;
-    const user = await User.findById(user_id);
+    const user = req.user
     if(!user || user.role==2)
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to add Category." });
@@ -72,20 +66,9 @@ const updateCategory = async (req, res) => {
     if(!oldCategory){
      return res.status(400).json({ message: "Category donot exists."});
     }
-    let image_url=Null;
     if (user.role ==0 ||user.role ==1){
-      if(!req.file){
-        image_url=oldCategory.category_thumbnail;
-      }
-      else{
-      const upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"category"});
-      const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
-      const deleted = await cloudinary.v2.uploader.destroy(getPublicId(image_url));
-      image_url=upload.secure_url;
-      }
 
       const updatedCategory =await Category.updateOne({_id:oldCategory.id}, {  category_title,
-        category_thumbnail:image_url,
         category_description});
   
         res.status(201).json(updatedCategory);
@@ -102,10 +85,7 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   const { category_title } = req.params;
   try {
-    const {
-      user_id,
-    } = req.body;
-    const user = await User.findById(user_id);
+    const user = req.user;
     if(!user || user.role==2)
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to delete Category." });
@@ -114,9 +94,6 @@ const deleteCategory = async (req, res) => {
     if(!oldCategory){
      return res.status(400).json({ message: "Category donot exists."});
     }
-    let image_url=oldCategory.category_thumbnail;
-    const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
-    const deleted = await cloudinary.v2.uploader.destroy(getPublicId(image_url));
     const deleteResponse=await Category.findByIdAndDelete(oldCategory.id);
     const category = await Category.find();
     res.status(200).json(category);
