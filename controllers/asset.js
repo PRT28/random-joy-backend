@@ -8,16 +8,21 @@ const cloudinary = require("../configs/cloudinary.js")
  const createAsset = async (req, res) => {
   try {
     const { user_id, description,keyword_name,category_name,asset_type,asset_category} = req.body;
-    const category=await Category.find({category_title:category_name});
+    const category=await Category.findOne({category_title:category_name});
+    const user = await User.findById(user_id);
+    const assettype=await Asset_type.findOne({name:asset_type})
+    console.log(assettype)
     if(!category)
     {
-      res.status(400).json({ message: "Invalid Category."});
+      return res.status(400).json({ message: "Invalid Category."});
     }
-    const user = await User.findById(user_id);
-    const assettype=Asset_type.findOne({ name:asset_type.toLowerCase()})
-    if(!asset)
+    if(!assettype)
     {
-      res.status(500).json({ message: "invalid Asset Type" })
+      return res.status(400).json({ message: "invalid Asset Type" })
+    }
+    if(!user)
+    {
+      return res.status(400).json({ message: "invalid user" })
     }
     let upload=null;
     if(asset_category==0){
@@ -26,6 +31,7 @@ const cloudinary = require("../configs/cloudinary.js")
     }else{
       upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joyOrWack"});
     }
+    Number(asset_category);
     if(asset_category==0)
     {
       const newPost = new Asset({
@@ -48,8 +54,9 @@ const cloudinary = require("../configs/cloudinary.js")
     
       const newPost = new Asset({
         user_id,
-        category_name,
+        category_id:category.id,
         url:upload.secure_url,
+        asset_category,
         asset_type:assettype.id
       });
      const joyOrWack= await newPost.save();
@@ -63,7 +70,23 @@ const cloudinary = require("../configs/cloudinary.js")
 /* READ */
  const getFeedAssets = async (req, res) => {
   try {
-    const assets = await Asset.find();
+    const assets = await Asset.find({asset_category:0});
+    res.status(200).json(assets);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+const getAllJoy = async (req, res) => {
+  try {
+    const assets = await Asset.find({asset_category:1});
+    res.status(200).json(assets);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+};
+const getAllWack = async (req, res) => {
+  try {
+    const assets = await Asset.find({asset_category:2});
     res.status(200).json(assets);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -205,4 +228,4 @@ const updateAsset = async (req, res) => {
     }
   };
 
-  module.exports ={createAsset,getFeedAssets,getUserAssets,likeAsset,dislikeAsset,deleteAsset}
+  module.exports ={createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,deleteAsset}
