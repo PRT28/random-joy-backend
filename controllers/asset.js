@@ -7,11 +7,9 @@ const cloudinary = require("../configs/cloudinary.js")
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { user_id, description,keyword_name,category_name,asset_type,asset_category} = req.body;
+    const { description,keyword_name,category_name,asset_type,asset_category} = req.body;
     const category=await Category.findOne({category_title:category_name});
-    const user = await User.findById(user_id);
-    const assettype=await Asset_type.findOne({name:asset_type})
-    console.log(assettype)
+    const user = req.user
     if(!category) {
       return res.status(400).json({ message: "Invalid Category."});
     }
@@ -20,7 +18,6 @@ const cloudinary = require("../configs/cloudinary.js")
     }
     let upload=null;
     if(asset_category === 0) {
-
        upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
     }else if (asset_category === 1){
       upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joy"});
@@ -45,9 +42,8 @@ const cloudinary = require("../configs/cloudinary.js")
       res.status(201).json(newPost);
     } else {
       if (user.role===2) {
-        res.status(400).json({ message: "User does not have permission to exeute the command." });
+       return  res.status(400).json({ message: "User does not have permission to exeute the command." });
       }  else{
-    
         const newPost = new Asset({
           user_id,
           category_id:category.id,
@@ -105,13 +101,14 @@ const getAllWack = async (req, res) => {
  const likeAsset = async (req, res) => {
   try {
     const { id } = req.params;
-    const { user_id } = req.body;
-    const user = await User.findById(user_id);
+    const user = req.user
     if(!user_id){
       res.status(401).json({ message: "Unauthorized" })
     }
     const asset = await Asset.findById(id);
-    console.log(asset)
+    if(!user_id){
+      res.status(401).json({ message: "Asset Not Found" })
+    }
     const isLiked = asset.likes.get(user_id);
     if (isLiked==1) {
       asset.likes.delete(user_id);
@@ -162,16 +159,22 @@ const dislikeAsset = async (req, res) => {
 const updateAsset = async (req, res) => {
   try {
     const {id} = req.params;
-    const { user_id } = req.body;
+    const { description,keyword_name,category_name,asset_type,asset_category} = req.body;
+
     const asset = await Asset.findById(id);
     if(!asset){
       res.status(404).json({ message:"Asset doesnot exist."});
     }
-    if (user_id==asset.user_id) {
+    const category=await Category.findOne({category_title:category_name});
+    const user = req.user
+    if(!category) {
+      return res.status(400).json({ message: "Invalid Category."});
+    }
+    if (user.id==asset.user_id) {
       let picpath=asset.url
       if(req.file)
       {
-        const upload = await cloudinary.v2.uploader.upload(req.file.path);
+        const upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
         const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
         const deleted = await cloudinary.v2.uploader.destroy(
           getPublicId(picpath)
@@ -179,10 +182,13 @@ const updateAsset = async (req, res) => {
           picpath=upload.secure_url;
       }
       await asset.updateOne({
-        title,
-        summary,
-        content,
-        cover: newPath,
+        user_id,
+        description,
+        category_id:category.id,
+        keyword_name,
+        url:upload.secure_url,
+        asset_category,
+        asset_type:assettype.id
       });
       const allasset = await Asset.find({});
       res.status(200).json(allasset);
