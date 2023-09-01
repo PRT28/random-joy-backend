@@ -119,4 +119,13 @@ const updatePuzzle = async (req, res) => {
     }
 }
 
-module.exports = {addPuzzle, checkAnswer, updatePuzzle}
+const getAllPuzzle = async (req, res) => {
+    try {
+      const puzzle = await Puzzle.find({});
+      res.status(200).json(puzzle);
+    } catch (err) {
+      res.status(500).json({ error: err.message });
+    }
+  };
+
+module.exports = {addPuzzle, checkAnswer, updatePuzzle, getAllPuzzle}
