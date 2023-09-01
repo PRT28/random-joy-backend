@@ -6,13 +6,13 @@ const User =require("../models/User.js")
 const createAssetType = async (req, res) => {
     try {
       const {user_id,name}=req.body;
-      const user = await User.findById(user_id);
-      console.log(user)
-    if(!user || user.role)
+      const user = await User.findOne({_id:user_id});
+    if(!user || user.role==2)
     {
-      res.status(400).json({ message: "Only Admins Are allowed to add Asset Type." });
-    }
-    if (user.role == 0){
+      res.status(400).json({ message: "Onlly Admins Are allowed to add Asset Type."});
+    }else{
+
+    if (user.role ==0 ||user.role ==1){
       const assetType = new Asset_type({
         name
       });
@@ -20,7 +20,7 @@ const createAssetType = async (req, res) => {
         res.status(201).json(assetType);
     } else{
       res.status(400).json({ message: "Only Admins Are allowed to add Asset type."});
-    }
+    }}
     }
     catch(err){
         res.status(500).json({ error: err.message });
@@ -38,6 +38,7 @@ const getAllAssetType = async (req, res) => {
 const getAssetType = async (req, res) => {
     try {
         const { name } = req.params;
+        
       const assetType = await Asset_type.find({category_title});
       res.status(200).json(assetType);
     } catch (err) {
