@@ -16,8 +16,8 @@ router.get("/:user_id/assets", verifyToken, getUserAssets);
 /* POST */
 router.post("/", verifyToken, upload.single("filepath"), createAsset)
 /* UPDATE */
-router.patch("/:id/like", verifyToken, likeAsset);
-router.patch("/:id/dislike", verifyToken, dislikeAsset);
+router.post("/:id/like", verifyToken, likeAsset);
+router.post("/:id/dislike", verifyToken, dislikeAsset);
 
 
 /* DELETE POST */

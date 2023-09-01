@@ -31,7 +31,7 @@ const assetSchema = new  mongoose.Schema(
       required: true
     },
     asset_type:{
-      type:mongoose.Schema.Types.ObjectId,ref:"asset_type",
+      type: Number,
       required: true,
     },
     like_count:{type:Number,default:0},
