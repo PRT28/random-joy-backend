@@ -24,7 +24,7 @@ const addPuzzle = async (req, res) => {
             })
 
             await newPuzzle.save();
-            res.status(201).json(newPost);
+            res.status(201).json(newPuzzle);
         } else {
             const newPuzzle = new Puzzle({
                 question,
@@ -33,7 +33,7 @@ const addPuzzle = async (req, res) => {
             })
 
             await newPuzzle.save();
-            res.status(201).json(newPost);
+            res.status(201).json(newPuzzle);
         }
     } catch (err) {
         res.status(409).json({ message: err.message });
@@ -100,7 +100,7 @@ const updatePuzzle = async (req, res) => {
 
             await newPuzzle.findByIdAndUpdate(id, newPuzzle)
                     .then(() => {
-                        res.status(201).json(newPost);
+                        res.status(201).json(newPuzzle);
                     })
         } else {
             const newPuzzle = new Puzzle({
@@ -111,7 +111,7 @@ const updatePuzzle = async (req, res) => {
 
             await newPuzzle.findByIdAndUpdate(id, newPuzzle)
             .then(() => {
-                res.status(201).json(newPost);
+                res.status(201).json(newPuzzle);
             })
         }
     } catch (err) {
