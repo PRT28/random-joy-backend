@@ -44,7 +44,7 @@ const cloudinary = require("../configs/cloudinary.js")
     if(asset_category === 0)
     {
       const newPost = new Asset({
-        user_id,
+        user_id:user.id,
         description,
         category_id:category.id,
         keyword_name,
@@ -59,7 +59,7 @@ const cloudinary = require("../configs/cloudinary.js")
        return  res.status(400).json({ message: "User does not have permission to exeute the command." });
       }  else{
         const newPost = new Asset({
-          user_id,
+          user_id:user.id,
           category_id:category.id,
           url:upload.secure_url,
           asset_category,
@@ -116,19 +116,16 @@ const getAllWack = async (req, res) => {
   try {
     const { id } = req.params;
     const user = req.user
-    if(!user_id){
-      res.status(401).json({ message: "Unauthorized" })
-    }
     const asset = await Asset.findById(id);
-    if(!user_id){
+    if(!asset){
       res.status(401).json({ message: "Asset Not Found" })
     }
-    const isLiked = asset.likes.get(user_id);
+    const isLiked = asset.likes.get(user.id);
     if (isLiked==1) {
-      asset.likes.delete(user_id);
+      asset.likes.delete(user.id);
       asset.like_count=asset.like_count-1;
     } else {
-      asset.likes.set(user_id, 1);
+      asset.likes.set(user.id, 1);
       asset.like_count=asset.like_count+1;
     }
     const updatedAsset = await Asset.findByIdAndUpdate(
@@ -196,13 +193,13 @@ const updateAsset = async (req, res) => {
           picpath=upload.secure_url;
       }
       await asset.updateOne({
-        user_id,
+        user_id:user.id,
         description,
         category_id:category.id,
         keyword_name,
         url:upload.secure_url,
         asset_category,
-        asset_type:assettype.id
+        asset_type
       });
       const allasset = await Asset.find({});
       res.status(200).json(allasset);
@@ -246,4 +243,4 @@ const updateAsset = async (req, res) => {
     }
   };
 
-  module.exports ={createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,deleteAsset}
+  module.exports ={createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,updateAsset,deleteAsset}

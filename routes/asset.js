@@ -1,5 +1,5 @@
 const  express = require("express");
-const {createAsset, getFeedAssets,getAllJoy,getAllWack, getUserAssets, likeAsset,deleteAsset, dislikeAsset } =require( "../controllers/asset.js");
+const {createAsset, getFeedAssets,getAllJoy,getAllWack, getUserAssets, likeAsset,deleteAsset, dislikeAsset, updateAsset } =require( "../controllers/asset.js");
 const multer=require("multer")
 const  verifyToken  = require( "../middleware/auth.js");
 const upload = multer({ storage: multer.diskStorage({}),
@@ -16,8 +16,9 @@ router.get("/:user_id/assets", verifyToken, getUserAssets);
 /* POST */
 router.post("/", verifyToken, upload.single("filepath"), createAsset)
 /* UPDATE */
-router.post("/:id/like", verifyToken, likeAsset);
-router.post("/:id/dislike", verifyToken, dislikeAsset);
+router.put("/:id/update", verifyToken, updateAsset)
+router.put("/:id/like", verifyToken, likeAsset);
+router.put("/:id/dislike", verifyToken, dislikeAsset);
 
 
 /* DELETE POST */
