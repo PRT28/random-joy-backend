@@ -1,8 +1,4 @@
 const Category = require("../models/Category");
-const User = require("../models/User.js");
-const cloudinary = require("../configs/cloudinary.js")
-
-
 
 /* CREATE */
 const createCategory = async (req, res) => {

@@ -25,6 +25,10 @@ const assetSchema = new  mongoose.Schema(
       of: Number,
     default:{}
   },
+  isActive:{
+    type:Boolean,
+    default: true
+  },
     description: String,
     asset_category:{
       type: Number,
