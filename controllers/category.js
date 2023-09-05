@@ -8,7 +8,6 @@ const cloudinary = require("../configs/cloudinary.js")
 const createCategory = async (req, res) => {
   try {
     const {
-      user_id,
       category_title,
       category_description
     } = req.body;
@@ -53,7 +52,6 @@ const updateCategory = async (req, res) => {
   const { category_title } = req.params;
   try {
     const {
-      user_id,
       category_title,
       category_description
     } = req.body;

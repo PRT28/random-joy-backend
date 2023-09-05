@@ -1,13 +1,13 @@
 const Asset  =require( "../models/Asset.js");
 const User =require("../models/User.js");
 const Category =require("../models/Category.js");
-const Asset_type= require("../models/Asset_type.js");
+
 const cloudinary = require("../configs/cloudinary.js")
 
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { description,keyword_name,category_name,asset_type,asset_category} = req.body;
+    const { description,keyword_name,category_name,upload_type,asset_type,asset_category} = req.body;
     const category=await Category.findOne({category_title:category_name});
     const user = req.user
     if(!category) {
@@ -17,16 +17,30 @@ const cloudinary = require("../configs/cloudinary.js")
       return res.status(400).json({ message: "invalid user" })
     }
     let upload=null;
-    if(asset_category === 0) {
-       upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
-    }else if (asset_category === 1){
-      upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joy"});
-    } else if (asset_category === 2) {
-      upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"whack"});
-    } else {
-      res.status(400).json({ message: "Wrong asset category." });
+    // if(!upload_tu)
+    // if(upload_type && !req.file)
+    // {
+    //   return res.status(400).json({ message: "File missing" })
+    // }
+    if(upload_type===0){
+        upload=req.body.url;
     }
-    Number(asset_category);
+    else if(upload_type===1){
+
+      if(asset_category === 0) {
+        if(!upload)upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
+      }else if (asset_category === 1){
+        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joy"});
+      } else if (asset_category === 2) {
+        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"whack"});
+      } else {
+        return res.status(400).json({ message: "Wrong asset category." });
+      }
+      upload=upload.secure_url;
+    }
+    else{
+      return res.status(400).json({ message: "Wrong asset category." });
+    }
     if(asset_category === 0)
     {
       const newPost = new Asset({
@@ -34,9 +48,9 @@ const cloudinary = require("../configs/cloudinary.js")
         description,
         category_id:category.id,
         keyword_name,
-        url:upload.secure_url,
+        url:upload,
         asset_category,
-        asset_type:assettype.id
+        asset_type:asset_type
       });
       await newPost.save();
       res.status(201).json(newPost);
@@ -49,7 +63,7 @@ const cloudinary = require("../configs/cloudinary.js")
           category_id:category.id,
           url:upload.secure_url,
           asset_category,
-          asset_type:assettype.id
+          asset_type:asset_type
         });
        const joyOrWack= await newPost.save();
         res.status(201).json(joyOrWack);
