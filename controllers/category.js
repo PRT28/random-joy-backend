@@ -49,7 +49,7 @@ const getCategory = async (req, res) => {
 
 /* UPDATE */
 const updateCategory = async (req, res) => {
-  const { category_title } = req.params;
+  const {category_id} = req.params;
   try {
     const {
       category_title,
@@ -60,13 +60,13 @@ const updateCategory = async (req, res) => {
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to add Category." });
     }
-    const oldCategory = await Category.findOne({category_title});
+    const oldCategory = await Category.findById(category_id);
     if(!oldCategory){
      return res.status(400).json({ message: "Category donot exists."});
     }
     if (user.role ==0 ||user.role ==1){
 
-      const updatedCategory =await Category.updateOne({_id:oldCategory.id}, {  category_title,
+      const updatedCategory =await Category.updateOne({_id:oldCategory.id}, { category_title,
         category_description});
   
         res.status(201).json(updatedCategory);
