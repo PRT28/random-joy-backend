@@ -61,7 +61,7 @@ const cloudinary = require("../configs/cloudinary.js")
         const newPost = new Asset({
           user_id:user.id,
           category_id:category.id,
-          url:upload.secure_url,
+          url:upload,
           asset_category,
           asset_type:asset_type
         });
