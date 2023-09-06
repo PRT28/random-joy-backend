@@ -62,7 +62,7 @@ const updateCategory = async (req, res) => {
     }
     if (user.role ==0 ||user.role ==1){
 
-      const updatedCategory =await Category.updateOne({_id:oldCategory.id}, { category_title,
+      const updatedCategory =await Category.updateOne({id:oldCategory.id}, {category_title,
         category_description});
   
         res.status(201).json(updatedCategory);
