@@ -14,7 +14,7 @@ router.post("/", verifyToken,upload.single("filepath"),createCategory);
 router.get("/", verifyToken, getAllCategory);
 router.get("/:category_title", verifyToken, getCategory);
 /*Update*/
-router.put("/update/:category_title", verifyToken, getCategory);
+router.put("/update/:category_title", verifyToken, updateCategory);
 /*Delete*/ 
 router.delete("/delete/:category_title", verifyToken, deleteCategory)
 
