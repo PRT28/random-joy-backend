@@ -15,6 +15,7 @@ const authRoutes = require("./routes/auth.js");
 const assetRoutes = require("./routes/asset.js");
 const categoryRoutes = require("./routes/category.js");
 const puzzleRoutes = require('./routes/puzzle.js');
+const reportRoutes = require('./routes/report.js');
 const commitmentAndStatementRoutes = require('./routes/commitment.js');
 var corsOptions = {
   credentials: true,
@@ -30,6 +31,7 @@ app.use("/auth", authRoutes);
 app.use("/asset",assetRoutes)
 app.use("/category",categoryRoutes)
 app.use("/puzzle", puzzleRoutes);
+app.use("/report", reportRoutes);
 app.use("/commitmentandstatement", commitmentAndStatementRoutes);
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
