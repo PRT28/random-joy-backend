@@ -39,16 +39,30 @@ const login = async (req, res) => {
   try {
     console.log(req.body)
     const {email, password } = req.body;
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADIM_PASSWORD) {
+      const user = {
+        username: 'randomjoy_superadmin',
+        email,
+        status: true,
+        zip_code: 0,
+        gender: 'male',
+        role: 0
+      }
+      const token = jwt.sign({user}, process.env.JWT_SECRET,{
+        expiresIn: "24h",
+      });
+      return ({
+         token,
+         user 
+      })
+    }
     const user = await User.findOne({ email: email});
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
 
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
-    const token = jwt.sign({ 
-      id: user._id,
-      isAcive: true,
-      role: user.role}, process.env.JWT_SECRET,{
+    const token = jwt.sign({user}, process.env.JWT_SECRET,{
         expiresIn: "24h",
       });
     delete user["password"];
@@ -72,6 +86,13 @@ const login = async (req, res) => {
 
 const getAllUser = async (req, res) => {
   try {
+    if (req.params.search) {
+      const reg = new RegExp("/"+ req.params.search +"^/")
+      const user = await User.find({$or: [
+        {username: reg},
+        {email: reg}
+      ]});
+    }
     const user = await User.find({});
     res.status(200).json(user);
   } catch (err) {
@@ -79,4 +100,28 @@ const getAllUser = async (req, res) => {
   }
 };
 
-module.exports={register,login,getAllUser}
+const changeUserStatus = async (req, res) => {
+  try {
+    const user = await User.find({id: req.params.id});
+    user.status = !user.status;
+    await User.findByIdAndUpdate(id, user)
+    .then(() => {
+        res.status(201).json({
+          success: true,
+          message: !user.status ? 'User Deactivated Successfully' : 'User Activated Successfully'
+        });
+    })
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+const authDetails = (req, res) => {
+  return {
+    ...req.user
+  }
+}
+
+
+
+module.exports={register,login,getAllUser, changeUserStatus,authDetails}
