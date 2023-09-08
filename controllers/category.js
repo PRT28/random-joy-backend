@@ -35,8 +35,8 @@ const getAllCategory = async (req, res) => {
   };
 const getCategory = async (req, res) => {
     try {
-        const { category_title } = req.params;
-      const category = await Category.find({category_title});
+        const { category_id } = req.params;
+      const category = await Category.findById(category_id);
       res.status(200).json(category);
     } catch (err) {
       res.status(404).json({ message: err.message });
