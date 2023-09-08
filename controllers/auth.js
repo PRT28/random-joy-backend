@@ -72,17 +72,6 @@ const login = async (req, res) => {
   }
 };
 
-// const logout = async (req, res) => {
-//   try {
-//     const token = (req.header('Authorization'))
-//     const claims = jwt.verify(token, process.env.JWT_SECRET);
-//     console.log(claim.id)
-//     res.status(200).json({ token, user });
-//   } catch (err) {
-//     res.status(500).json({ error: err.message });
-//   }
-// };
-
 
 const getAllUser = async (req, res) => {
   try {
