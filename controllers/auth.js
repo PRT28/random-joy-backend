@@ -86,15 +86,19 @@ const login = async (req, res) => {
 
 const getAllUser = async (req, res) => {
   try {
-    if (req.params.search) {
-      const reg = new RegExp("/"+ req.params.search +"^/")
+    const search = req.query.search
+    if (search) {
+      const reg = new RegExp(search)
       const user = await User.find({$or: [
         {username: reg},
         {email: reg}
       ]});
+      res.status(200).json(user); 
+    } else {
+      const user = await User.find({})
+      res.status(200).json(user);
     }
-    const user = await User.find({});
-    res.status(200).json(user);
+    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
