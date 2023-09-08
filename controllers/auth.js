@@ -39,7 +39,7 @@ const login = async (req, res) => {
   try {
     console.log(req.body)
     const {email, password } = req.body;
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADIM_PASSWORD) {
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
       const user = {
         username: 'randomjoy_superadmin',
         email,
