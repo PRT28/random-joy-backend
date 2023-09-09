@@ -34,12 +34,32 @@ const createReport = async (req, res) => {
   /* READ */
   const getAllReports = async (req, res) => {
       try {
-        const report = await Report.find({});
+        const report = await Report.aggregate([
+          {
+            $lookup: {
+              from: 'assets',
+              localField: 'asset_id',
+              foreignField: '_id',
+              as: 'assetDetails'
+            }
+          },
+          {$unwind: "$assetDetails"},
+          {
+            $lookup: {
+              from: 'users',
+              localField: 'user_id',
+              foreignField: '_id',
+              as: 'userDetails'
+            }
+          },
+          {$unwind: "$userDetails"},
+        ]);
         res.status(200).json(report);
       } catch (err) {
         res.status(404).json({ message: err.message });
       }
     };
+
     const getAllUserReport = async (req, res) => {
         const{username}=req.params;
       try {
