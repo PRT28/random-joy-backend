@@ -12,10 +12,12 @@ router.post("/", verifyToken,upload.single("filepath"),createCategory);
 
 /* GET */
 router.get("/", verifyToken, getAllCategory);
+router.get("/:category_id", verifyToken, getCategory);
 /*Update*/
-router.put("/update/:id", verifyToken, updateCategory);
+router.put("/update/:category_id", verifyToken, updateCategory);
 /*Delete*/ 
 router.delete("/delete/:id", verifyToken, deleteCategory)
+router.delete("/delete/:category_id", verifyToken, deleteCategory)
 
 
 module.exports= router;

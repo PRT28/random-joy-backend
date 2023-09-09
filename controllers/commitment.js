@@ -15,7 +15,7 @@ const createCommitmentOrStatement = async (req, res) => {
         return res.status(400).json({"message":"Invalid commitment or statement type"})
     }
     const newCategory = new Commitment({
-        user_id:user.id,
+        user_id:user._id,
         commitment_statement,
         commitment_text
       });
