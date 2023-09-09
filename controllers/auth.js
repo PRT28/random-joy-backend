@@ -110,9 +110,7 @@ const changeUserStatus = async (req, res) => {
 }
 
 const authDetails = (req, res) => {
-  return {
-    ...req.user
-  }
+  res.status(200).json({ ...req.user });
 }
 
 
