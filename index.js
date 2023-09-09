@@ -8,6 +8,8 @@ const bcrypt = require("bcryptjs");
 const app = express();
 const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
+const swaggerUi = require('swagger-ui-express')
+const swaggerFile = require('./swagger_output.json')
 const multer = require("multer");
 const helmet =require("helmet");
 app.use(helmet());
@@ -16,11 +18,13 @@ const assetRoutes = require("./routes/asset.js");
 const categoryRoutes = require("./routes/category.js");
 const puzzleRoutes = require('./routes/puzzle.js');
 const reportRoutes = require('./routes/report.js');
+const keywordsRoute = require('./routes/keyword.js');
 const commitmentAndStatementRoutes = require('./routes/commitment.js');
 var corsOptions = {
   credentials: true,
   origin: true
 };
+
 
 app.use(cors(corsOptions));
 app.use(express.json());
@@ -33,6 +37,8 @@ app.use("/category",categoryRoutes)
 app.use("/puzzle", puzzleRoutes);
 app.use("/report", reportRoutes);
 app.use("/commitmentandstatement", commitmentAndStatementRoutes);
+app.use("/keywords", keywordsRoute);
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>
