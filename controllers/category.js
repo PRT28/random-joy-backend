@@ -83,7 +83,7 @@ const deleteCategory = async (req, res) => {
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to delete Category." });
     }
-    const oldCategory = await Category.findById({category_id});
+    const oldCategory = await Category.findById(id);
     if(!oldCategory){
      return res.status(400).json({ message: "Category donot exists."});
     }
