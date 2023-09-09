@@ -3,7 +3,8 @@ const {
     addPuzzle,
     updatePuzzle,
     checkAnswer,
-    getAllPuzzle
+    getAllPuzzle,
+    deletePuzzle
 } = require("../controllers/puzzle");
 
 const  verifyToken  = require( "../middleware/auth.js");
@@ -14,5 +15,6 @@ router.post('/add', verifyToken, addPuzzle);
 router.put('/update', verifyToken, updatePuzzle),
 router.post('/checkAnswer', verifyToken, checkAnswer)
 router.get('/', verifyToken, getAllPuzzle)
+router.delete('/:id', verifyToken, deletePuzzle)
 
 module.exports = router;

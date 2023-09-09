@@ -135,4 +135,23 @@ const getAllPuzzle = async (req, res) => {
     }
   };
 
-module.exports = {addPuzzle, checkAnswer, updatePuzzle, getAllPuzzle}
+  const deletePuzzle = async (req, res) => {
+    try {
+        const {id} = req.params;
+        const user=req.user
+        if (user.role===2) {
+            return  res.status(400).json({ message: "User does not have permission to exeute the command." });
+        }
+        await Puzzle.findByIdAndDelete(id)
+            .then(() => {
+                res.status(200).json({
+                    message: 'Puzzle deleted successfully',
+                    response: true
+                })
+            })
+    } catch (err) {
+        res.status(500).json({ error: err.message });
+    }
+  }
+
+module.exports = {addPuzzle, checkAnswer, updatePuzzle, getAllPuzzle, deletePuzzle}

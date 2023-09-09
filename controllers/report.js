@@ -88,5 +88,24 @@ const createReport = async (req, res) => {
         res.status(404).json({ message: err.message });
       }
     }
+
+    const deleteReport = async (req, res) => {
+      try {
+        const {id} = req.params;
+        const user=req.user
+        if (user.role===2) {
+              return  res.status(400).json({ message: "User does not have permission to exeute the command." });
+        }
+        await Report.findByIdAndDelete(id)
+              .then(() => {
+                res.status(200).json({
+                    message: 'Report deleted successfully',
+                    response: true
+                })
+            })
+      } catch (err) {
+        res.status(404).json({ message: err.message });
+      }
+    }
   
-    module.exports ={createReport,getAllReports,getAllUserReport,takeAction}
+    module.exports ={createReport,getAllReports,getAllUserReport,takeAction, deleteReport}
