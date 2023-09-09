@@ -61,7 +61,8 @@ const createReport = async (req, res) => {
         if (user.id===report.author) {
             return  res.status(400).json({ message: "Author of asset cannot take action on his asset report" });
            }
-        report=$set('action', !report.action);
+        report.$set('action', !report.action);
+        report.save()
         return res.status(200).json(report);
       } catch (err) {
         res.status(404).json({ message: err.message });
