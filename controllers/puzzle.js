@@ -98,7 +98,7 @@ const updatePuzzle = async (req, res) => {
                 answer
             })
 
-            await newPuzzle.findByIdAndUpdate(id, newPuzzle)
+            await Puzzle.findByIdAndUpdate(id, newPuzzle)
                     .then(() => {
                         res.status(201).json(newPuzzle);
                     })
@@ -109,7 +109,7 @@ const updatePuzzle = async (req, res) => {
                 answer
             })
 
-            await newPuzzle.findByIdAndUpdate(id, newPuzzle)
+            await Puzzle.findByIdAndUpdate(id, newPuzzle)
             .then(() => {
                 res.status(201).json(newPuzzle);
             })
