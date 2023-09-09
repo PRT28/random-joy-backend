@@ -243,4 +243,28 @@ const updateAsset = async (req, res) => {
     }
   };
 
-  module.exports ={createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,updateAsset,deleteAsset}
+  
+  
+  
+  const updateAssetStatus = async (req, res) => {
+    try {
+      const { id } = req.params;
+      const user = req.user;
+      console.log(user)
+      const asset = await Asset.findById(id);
+      if(!asset){
+       return res.status(401).json({ message: "Asset Not Found" })
+      }
+      if (user.role===2) {
+        return  res.status(400).json({ message: "User does not have permission to exeute the command." });
+       }  else{
+      asset.$set('isActive', !report.isActive);
+        asset.save()
+      res.status(200).json(asset);
+       }
+    }
+    catch(err){
+      res.status(404).json({ message: err.message });
+    }
+  }
+  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,updateAsset,deleteAsset}
