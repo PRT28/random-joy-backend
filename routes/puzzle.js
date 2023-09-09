@@ -13,6 +13,6 @@ const router = express.Router();
 router.post('/add', verifyToken, addPuzzle);
 router.put('/update', verifyToken, updatePuzzle),
 router.post('/checkAnswer', verifyToken, checkAnswer)
-router.get('/getAllPuzzle', verifyToken, getAllPuzzle)
+router.get('/', verifyToken, getAllPuzzle)
 
 module.exports = router;

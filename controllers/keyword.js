@@ -26,9 +26,16 @@ const createKeyword = async (req, res) => {
 };
 /* READ */
 const getAllKeyword = async (req, res) => {
-    try {
-      const category = await Keyword.find();
-      res.status(200).json(category);
+  try {
+      const { search } = req.query;
+      if (search) {
+          const reg = new RegExp(search)
+          const keyword = await Keyword.find({keyword_title: reg});
+          res.status(200).json(keyword);
+      } else {
+          const keyword = await Keyword.find({});
+          res.status(200).json(keyword);
+      }   
     } catch (err) {
       res.status(404).json({ message: err.message });
     }

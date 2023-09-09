@@ -121,8 +121,15 @@ const updatePuzzle = async (req, res) => {
 
 const getAllPuzzle = async (req, res) => {
     try {
-      const puzzle = await Puzzle.find({});
-      res.status(200).json(puzzle);
+        const { search } = req.query;
+        if (search) {
+            const reg = new RegExp(search)
+            const puzzle = await Puzzle.find({question: reg});
+            res.status(200).json(puzzle);
+        } else {
+            const puzzle = await Puzzle.find({});
+            res.status(200).json(puzzle);
+        }   
     } catch (err) {
       res.status(500).json({ error: err.message });
     }

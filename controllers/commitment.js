@@ -29,16 +29,36 @@ const createCommitmentOrStatement = async (req, res) => {
 /* READ */
 const getAllCommitment = async (req, res) => {
     try {
-      const category = await Commitment.find({commitment_statement:0});
-      res.status(200).json(category);
+      const { search } = req.query
+      if ( search ) {
+        const reg = new RegExp(search)
+        const category = await Commitment.find({$and: [
+          {commitment_statement:0},
+          {commitment_text: reg}
+        ]});
+       res.status(200).json(category);
+      } else {
+        const category = await Commitment.find({commitment_statement:0});
+        res.status(200).json(category);
+      }
     } catch (err) {
       res.status(404).json({ message: err.message });
     }
   };
   const getAllStatement = async (req, res) => {
     try {
-      const category = await Commitment.find({commitment_statement:1});
-      res.status(200).json(category);
+      const { search } = req.query
+      if ( search ) {
+        const reg = new RegExp(search)
+        const category = await Commitment.find({$and: [
+          {commitment_statement:1},
+          {commitment_text: reg}
+        ]});
+        res.status(200).json(category);
+      } else {
+        const category = await Commitment.find({commitment_statement:1});
+        res.status(200).json(category);
+      }
     } catch (err) {
       res.status(404).json({ message: err.message });
     }
