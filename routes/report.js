@@ -6,8 +6,7 @@ const router = express.Router();
 
 router.post("/",verifyToken, createReport);
 router.get("/",verifyToken,getAllReports);
-router.get("/:username",verifyToken, getAllUserReport);
-router.patch("/:report_id",verifyToken,takeAction);
+router.patch("/takeaction/:report_id",verifyToken,takeAction);
 
 
 module.exports =  router 

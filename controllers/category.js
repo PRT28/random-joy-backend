@@ -1,4 +1,5 @@
 const Category = require("../models/Category");
+const { register } = require("./auth");
 
 /* CREATE */
 const createCategory = async (req, res) => {
@@ -27,17 +28,15 @@ const createCategory = async (req, res) => {
 /* READ */
 const getAllCategory = async (req, res) => {
     try {
+      const category_title = req.query.search
+    if (category_title ) {
+      const reg = new RegExp(category_title )
+      const cat = await Category.find({category_title:reg});
+      res.status(200).json(cat); 
+    }else{  
       const category = await Category.find();
       res.status(200).json(category);
-    } catch (err) {
-      res.status(404).json({ message: err.message });
     }
-  };
-const getCategory = async (req, res) => {
-    try {
-        const { category_id } = req.params;
-      const category = await Category.findById(category_id);
-      res.status(200).json(category);
     } catch (err) {
       res.status(404).json({ message: err.message });
     }
@@ -96,4 +95,4 @@ const deleteCategory = async (req, res) => {
 }
 }
 
-  module.exports ={createCategory,getAllCategory,getCategory,updateCategory,deleteCategory}
+  module.exports ={createCategory,getAllCategory,updateCategory,deleteCategory}

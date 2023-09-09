@@ -7,7 +7,7 @@ const cloudinary = require("../configs/cloudinary.js")
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { description,keyword_name,category_name,upload_type,asset_type,asset_category} = req.body;
+    const { description,keyword_name,name,category_name,upload_type,asset_type,asset_category} = req.body;
     const category=await Category.findOne({category_title:category_name});
     const user = req.user
     if(!category) {
@@ -48,6 +48,7 @@ const cloudinary = require("../configs/cloudinary.js")
         description,
         category_id:category.id,
         keyword_name,
+        name,
         url:upload,
         asset_category,
         asset_type:asset_type
@@ -62,6 +63,7 @@ const cloudinary = require("../configs/cloudinary.js")
           user_id:user.id,
           category_id:category.id,
           url:upload,
+          name,
           asset_category,
           asset_type:asset_type
         });
@@ -78,6 +80,7 @@ const cloudinary = require("../configs/cloudinary.js")
 /* READ */
  const getFeedAssets = async (req, res) => {
   try {
+    
     const assets = await Asset.find({asset_category:0});
     res.status(200).json(assets);
   } catch (err) {
@@ -139,38 +142,10 @@ const getAllWack = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-const dislikeAsset = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { user_id } = req.body;
-    const user = await User.findById(user_id);
-    const asset = await Asset.findById(id);
-    console.log(asset)
-    const isLiked = asset.likes.get(user_id);
-    if (isLiked==1) {
-      asset.likes.set(user_id, 2);
-      asset.like_count=asset.like_count-1;
-    } else if(isLiked==2){
-      asset.likes.delete(user_id);
-    } else {
-      asset.likes.set(user_id, 2);
-    
-    }
-    const updatedAsset = await Asset.findByIdAndUpdate(
-      id,
-      { likes: asset.likes,like_count:asset.like_count },
-      { new: true }
-    );
-
-    res.status(200).json(updatedAsset);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
-  }
-};
 const updateAsset = async (req, res) => {
   try {
     const {id} = req.params;
-    const { description,keyword_name,category_name,asset_type,asset_category} = req.body;
+    const { description,keyword_name,category_name,name,asset_type,asset_category} = req.body;
 
     const asset = await Asset.findById(id);
     if(!asset){
@@ -195,6 +170,7 @@ const updateAsset = async (req, res) => {
       await asset.updateOne({
         user_id:user.id,
         description,
+        name,
         category_id:category.id,
         keyword_name,
         url:upload.secure_url,
@@ -207,9 +183,6 @@ const updateAsset = async (req, res) => {
     } else {
       res.status(403).json({"message":"You are not the author of asset"})
     }
-
-
-
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -267,4 +240,4 @@ const updateAsset = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   }
-  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,updateAsset,deleteAsset}
+  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset}

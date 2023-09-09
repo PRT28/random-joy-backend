@@ -20,6 +20,10 @@ const assetSchema = new  mongoose.Schema(
       type: String,
       required: true,
     },
+    name: {
+      type: String,
+      required: true,
+    },
     likes:{
       type: Map,
       of: Number,
