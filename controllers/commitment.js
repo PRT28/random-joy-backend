@@ -64,4 +64,20 @@ const getAllCommitment = async (req, res) => {
     }
   };
 
-  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement}
+  const deleteCommitment = async (req, res) => {
+    try {
+      const {id}=req.params;
+      if(user.role==2)
+    {
+      return res.status(400).json({ message: "Only Admins Are allowed to Delete." });
+    }
+    else{
+      await Commitment.findByIdAndDelete(id);
+      const cat=Commitment.find({})
+      res.status(200).json(cat);
+    }
+    }catch (err) {
+      res.status(404).json({ message: err.message });
+    }
+  }
+  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment}

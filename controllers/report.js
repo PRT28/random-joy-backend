@@ -1,6 +1,7 @@
 const Report= require("../models/Report.js");
 const Asset  =require( "../models/Asset.js");
 
+
 /* CREATE */
 
 const createReport = async (req, res) => {
@@ -34,6 +35,36 @@ const createReport = async (req, res) => {
   /* READ */
   const getAllReports = async (req, res) => {
       try {
+        const username = req.query.username
+        if (username) {
+          const reg = new RegExp(username)
+          const report = await Report.aggregate([
+            {
+              $lookup: {
+                from: 'assets',
+                localField: 'asset_id',
+                foreignField: '_id',
+                as: 'assetDetails'
+              }
+            },
+            {$unwind: "$assetDetails"},
+            {
+              $lookup: {
+                from: 'users',
+                localField: 'user_id',
+                foreignField: '_id',
+                as: 'userDetails'
+              }
+            },
+            {$unwind: "$userDetails"},
+            {$match: {"userDetails.username": reg}}
+          ]);
+         
+        res.status(200).json(report);
+        }
+
+
+else{
         const report = await Report.aggregate([
           {
             $lookup: {
@@ -55,20 +86,14 @@ const createReport = async (req, res) => {
           {$unwind: "$userDetails"},
         ]);
         res.status(200).json(report);
+      }
+   
+
       } catch (err) {
         res.status(404).json({ message: err.message });
       }
     };
 
-    const getAllUserReport = async (req, res) => {
-        const{username}=req.params;
-      try {
-        const report = await Report.find({author:username});
-        res.status(200).json(report);
-      } catch (err) {
-        res.status(404).json({ message: err.message });
-      }
-    };
     /*Update*/
     const takeAction = async (req, res) => {
         const{report_id}=req.params;
@@ -108,4 +133,4 @@ const createReport = async (req, res) => {
       }
     }
   
-    module.exports ={createReport,getAllReports,getAllUserReport,takeAction, deleteReport}
+    module.exports ={createReport,getAllReports,takeAction, deleteReport}
