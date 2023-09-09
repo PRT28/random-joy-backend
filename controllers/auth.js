@@ -111,10 +111,6 @@ const changeUserStatus = async (req, res) => {
 
 const authDetails = (req, res) => {
   res.status(200).json({ ...req.user });
-  
-    res.status(200).json({...req.user});
-    
-  
 }
 
 

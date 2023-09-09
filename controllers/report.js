@@ -1,6 +1,7 @@
 const Report= require("../models/Report.js");
 const Asset  =require( "../models/Asset.js");
 
+
 /* CREATE */
 
 const createReport = async (req, res) => {
@@ -33,6 +34,17 @@ const createReport = async (req, res) => {
   };
   /* READ */
   const getAllReports = async (req, res) => {
+    const username = req.query.username
+    if (username) {
+      const reg = new RegExp(search)
+      const user = await User.find({$or: [
+        {username: reg},
+        {email: reg}
+      ]});
+      res.status(200).json(user); 
+    }
+
+
       try {
         const report = await Report.aggregate([
           {
