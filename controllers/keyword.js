@@ -14,8 +14,8 @@ const createKeyword = async (req, res) => {
     }
     else{
       const newKeyword = new Keyword({
-        title,
-        description
+        keyword_title: title,
+        keyword_description: description
       } );
         await newKeyword.save();
         res.status(201).json(newKeyword);
@@ -61,8 +61,8 @@ const updateKeyword = async (req, res) => {
     if (user.role ==0 ||user.role ==1){
 
       const updatedKeyword =await Keyword.updateOne({id:oldKeyword.id},{
-        title,
-        description
+        keyword_title: title,
+        keyword_description: description
       });
   
         res.status(201).json(updatedKeyword);
