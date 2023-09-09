@@ -7,7 +7,7 @@ const cloudinary = require("../configs/cloudinary.js")
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { description,keyword_name,category_name,upload_type,asset_type,asset_category} = req.body;
+    const { description,keyword_name,name,category_name,upload_type,asset_type,asset_category} = req.body;
     const category=await Category.findOne({category_title:category_name});
     const user = req.user
     if(!category) {
@@ -17,11 +17,6 @@ const cloudinary = require("../configs/cloudinary.js")
       return res.status(400).json({ message: "invalid user" })
     }
     let upload=null;
-    // if(!upload_tu)
-    // if(upload_type && !req.file)
-    // {
-    //   return res.status(400).json({ message: "File missing" })
-    // }
     if(upload_type===0){
         upload=req.body.url;
     }
@@ -48,6 +43,7 @@ const cloudinary = require("../configs/cloudinary.js")
         description,
         category_id:category.id,
         keyword_name,
+        name,
         url:upload,
         asset_category,
         asset_type:asset_type
@@ -62,6 +58,7 @@ const cloudinary = require("../configs/cloudinary.js")
           user_id:user.id,
           category_id:category.id,
           url:upload,
+          name,
           asset_category,
           asset_type:asset_type
         });
@@ -78,6 +75,7 @@ const cloudinary = require("../configs/cloudinary.js")
 /* READ */
  const getFeedAssets = async (req, res) => {
   try {
+    
     const assets = await Asset.find({asset_category:0});
     res.status(200).json(assets);
   } catch (err) {
@@ -139,85 +137,54 @@ const getAllWack = async (req, res) => {
     res.status(404).json({ message: err.message });
   }
 };
-const dislikeAsset = async (req, res) => {
-  try {
-    const { id } = req.params;
-    const { user_id } = req.body;
-    const user = await User.findById(user_id);
-    const asset = await Asset.findById(id);
-    console.log(asset)
-    const isLiked = asset.likes.get(user_id);
-    if (isLiked==1) {
-      asset.likes.set(user_id, 2);
-      asset.like_count=asset.like_count-1;
-    } else if(isLiked==2){
-      asset.likes.delete(user_id);
-    } else {
-      asset.likes.set(user_id, 2);
-    
-    }
-    const updatedAsset = await Asset.findByIdAndUpdate(
-      id,
-      { likes: asset.likes,like_count:asset.like_count },
-      { new: true }
-    );
-
-    res.status(200).json(updatedAsset);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
-  }
-};
 const updateAsset = async (req, res) => {
   try {
     const {id} = req.params;
-    const { description,keyword_name,category_name,asset_type,asset_category} = req.body;
+    const { description,keyword_name,category_name,url,name,asset_type,asset_category,upload_type} = req.body;
 
     const asset = await Asset.findById(id);
     if(!asset){
       res.status(404).json({ message:"Asset doesnot exist."});
     }
-    const category=await Category.findOne({category_title:category_name});
     const user = req.user
+    const category=await Category.findOne({category_title:category_name});
     if(!category) {
       return res.status(400).json({ message: "Invalid Category."});
     }
-    if (user.id==asset.user_id) {
-      let picpath=asset.url
-      if(req.file)
-      {
-        const upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
-        const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
-        const deleted = await cloudinary.v2.uploader.destroy(
-          getPublicId(picpath)
-          );
-          picpath=upload.secure_url;
+    let upload=null;
+    if(upload_type===0){
+        upload=req.body.url;
+    }
+    else if(upload_type===1){
+
+      if(asset_category === 0) {
+        if(!upload)upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
+      }else if (asset_category === 1){
+        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joy"});
+      } else if (asset_category === 2) {
+        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"whack"});
+      } else {
+        return res.status(400).json({ message: "Wrong asset category." });
       }
+      upload=upload.secure_url;
+    }
       await asset.updateOne({
         user_id:user.id,
         description,
+        name,
         category_id:category.id,
         keyword_name,
-        url:upload.secure_url,
+        url:upload,
         asset_category,
         asset_type
       });
       const allasset = await Asset.find({});
       res.status(200).json(allasset);
       
-    } else {
-      res.status(403).json({"message":"You are not the author of asset"})
-    }
-
-
-
   } catch (err) {
-    res.status(404).json({ message: err.message });
+    res.status(500).json({ message: err.message });
   }
-
 }
-
-
-
   /* DELETE POST */
   const deleteAsset = async (req, res) => {
     try {
@@ -267,4 +234,4 @@ const updateAsset = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   }
-  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,updateAsset,deleteAsset}
+  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset}
