@@ -9,7 +9,7 @@ const User= require("../models/User.js");
     const {
       username,
       email,
-      password,
+      passwrd,
       gender,
       zip_code,
     } = req.body;
