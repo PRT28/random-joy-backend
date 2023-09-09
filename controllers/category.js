@@ -44,7 +44,7 @@ const getAllCategory = async (req, res) => {
 
 /* UPDATE */
 const updateCategory = async (req, res) => {
-  const {category_id} = req.params;
+  const {id} = req.params;
   try {
     const {
       category_title,
@@ -76,7 +76,7 @@ const updateCategory = async (req, res) => {
 /* Delete Category*/ 
 
 const deleteCategory = async (req, res) => {
-  const {category_id} = req.params;
+  const {id} = req.params;
   try {
     const user = req.user;
     if(!user || user.role==2)
