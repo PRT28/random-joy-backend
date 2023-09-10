@@ -168,7 +168,7 @@ const updateAsset = async (req, res) => {
       }
       upload=upload.secure_url;
     }
-      await asset.updateOne({
+      await Asset.findByIdAndUpdate(id, {
         user_id:user._id,
         description,
         name,
@@ -177,7 +177,10 @@ const updateAsset = async (req, res) => {
         url:upload,
         asset_category,
         asset_type
-      });
+      }).then(() => res.status(201).json({
+        success: true,
+        message: "Asset updated successfully"
+      }))
       const allasset = await Asset.find({});
       res.status(200).json(allasset);
       

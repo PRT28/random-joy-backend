@@ -60,10 +60,13 @@ const updateKeyword = async (req, res) => {
     }
     if (user.role ==0 ||user.role ==1){
 
-      const updatedKeyword =await Keyword.updateOne({id:oldKeyword.id},{
+      await Keyword.findByIdAndUpdate(id, {
         keyword_title: title,
         keyword_description: description
-      });
+      }).then(() => res.status(201).json({
+        success: true,
+        message: "Keyword updated successfully"
+      }));
   
         res.status(201).json(updatedKeyword);
     } else{

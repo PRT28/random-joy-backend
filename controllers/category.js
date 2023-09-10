@@ -50,7 +50,7 @@ const updateCategory = async (req, res) => {
       category_title,
       category_description
     } = req.body;
-    const user = req.user
+    const { user } = req.user
     if(!user || user.role==2)
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to add Category." });
@@ -61,10 +61,13 @@ const updateCategory = async (req, res) => {
     }
     if (user.role ==0 ||user.role ==1){
 
-      const updatedCategory =await Category.updateOne({id:oldCategory.id}, {category_title,
-        category_description});
+      await Category.findByIdAndUpdate(id, {category_title,
+        category_description}).then(() => res.status(201).json({
+          success: true,
+          message: "Category updated successfully"
+        }))
   
-        res.status(201).json(updatedCategory);
+        
     } else{
       res.status(400).json({ message: "Only Admins Are allowed to add Category." });
     }
