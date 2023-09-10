@@ -39,7 +39,7 @@ const cloudinary = require("../configs/cloudinary.js")
     if(asset_category === 0)
     {
       const newPost = new Asset({
-        user_id:user.id,
+        user_id:user._id,
         description,
         category_id:category.id,
         keyword_name,
@@ -55,7 +55,7 @@ const cloudinary = require("../configs/cloudinary.js")
        return  res.status(400).json({ message: "User does not have permission to exeute the command." });
       }  else{
         const newPost = new Asset({
-          user_id:user.id,
+          user_id:user._id,
           category_id:category.id,
           url:upload,
           name,
@@ -118,12 +118,12 @@ const getAllWack = async (req, res) => {
     if(!asset){
       res.status(401).json({ message: "Asset Not Found" })
     }
-    const isLiked = asset.likes.get(user.id);
+    const isLiked = asset.likes.get(user._id);
     if (isLiked==1) {
-      asset.likes.delete(user.id);
+      asset.likes.delete(user._id);
       asset.like_count=asset.like_count-1;
     } else {
-      asset.likes.set(user.id, 1);
+      asset.likes.set(user._id, 1);
       asset.like_count=asset.like_count+1;
     }
     const updatedAsset = await Asset.findByIdAndUpdate(
@@ -169,7 +169,7 @@ const updateAsset = async (req, res) => {
       upload=upload.secure_url;
     }
       await asset.updateOne({
-        user_id:user.id,
+        user_id:user._id,
         description,
         name,
         category_id:category.id,
