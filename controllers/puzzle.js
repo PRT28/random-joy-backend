@@ -89,7 +89,7 @@ const updatePuzzle = async (req, res) => {
         const {puzzleId: id} = req.query;
 
         if (questionType === 0) {
-            const newPuzzle = new Puzzle({
+            const newPuzzle = {
                 question,
                 questionType,
                 optionA,
@@ -97,18 +97,18 @@ const updatePuzzle = async (req, res) => {
                 optionC,
                 optionD,
                 answer
-            })
+            }
 
             await Puzzle.findByIdAndUpdate(id, newPuzzle)
                     .then(() => {
                         res.status(201).json(newPuzzle);
                     })
         } else {
-            const newPuzzle = new Puzzle({
+            const newPuzzle = {
                 question,
                 questionType,
                 answer
-            })
+            }
 
             await Puzzle.findByIdAndUpdate(id, newPuzzle)
             .then(() => {
