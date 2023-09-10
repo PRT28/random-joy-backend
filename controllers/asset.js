@@ -9,7 +9,7 @@ const cloudinary = require("../configs/cloudinary.js")
   try {
     const { description,keyword_name,name,category_name,upload_type,asset_type,asset_category} = req.body;
     const category=await Category.findOne({category_title:category_name});
-    const user = req.user
+    const { user } = req.user
     if(!category) {
       return res.status(400).json({ message: "Invalid Category."});
     }
@@ -113,7 +113,7 @@ const getAllWack = async (req, res) => {
  const likeAsset = async (req, res) => {
   try {
     const { id } = req.params;
-    const user = req.user
+    const { user } = req.user
     const asset = await Asset.findById(id);
     if(!asset){
       res.status(401).json({ message: "Asset Not Found" })
@@ -146,7 +146,7 @@ const updateAsset = async (req, res) => {
     if(!asset){
       res.status(404).json({ message:"Asset doesnot exist."});
     }
-    const user = req.user
+    const { user } = req.user
     const category=await Category.findOne({category_title:category_name});
     if(!category) {
       return res.status(400).json({ message: "Invalid Category."});
@@ -219,7 +219,7 @@ const updateAsset = async (req, res) => {
   const updateAssetStatus = async (req, res) => {
     try {
       const { id } = req.params;
-      const user = req.user;
+      const { user } = req.user;
       console.log(user)
       const asset = await Asset.findById(id);
       if(!asset){

@@ -9,7 +9,7 @@ const createCommitmentOrStatement = async (req, res) => {
     } = req.body;
     console.log(req.body)
 
-    const user = req.user;
+    const { user } = req.user;
     if(commitment_statement!==1 && commitment_statement!==0 )
     {
         return res.status(400).json({"message":"Invalid commitment or statement type"})

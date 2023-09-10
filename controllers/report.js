@@ -14,7 +14,7 @@ const createReport = async (req, res) => {
     if(!asset){
         res.status(404).json({ message:"Asset doesnot exist."});
     }
-    const user = req.user;
+    const { user } = req.user;
     if(!report_text ||  report_text==="" ) 
     {
         return res.status(400).json({"message":"Report test cannot be empty"})
