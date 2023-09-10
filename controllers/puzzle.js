@@ -1,3 +1,4 @@
+const { default: mongoose } = require("mongoose");
 const Puzzle = require("../models/Puzzle")
 
 const addPuzzle = async (req, res) => {
@@ -85,7 +86,7 @@ const updatePuzzle = async (req, res) => {
             answer
         } = req.body
 
-        const {puzzleId: id} = req.params;
+        const {puzzleId: id} = req.query;
 
         if (questionType === 0) {
             const newPuzzle = new Puzzle({
@@ -137,7 +138,7 @@ const getAllPuzzle = async (req, res) => {
 
   const deletePuzzle = async (req, res) => {
     try {
-        const {id} = req.params;
+        const {id} = req.query;
         const user=req.user
         if (user.role===2) {
             return  res.status(400).json({ message: "User does not have permission to exeute the command." });

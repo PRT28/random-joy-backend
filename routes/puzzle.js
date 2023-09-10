@@ -15,6 +15,6 @@ router.post('/add', verifyToken, addPuzzle);
 router.put('/update', verifyToken, updatePuzzle),
 router.post('/checkAnswer', verifyToken, checkAnswer)
 router.get('/', verifyToken, getAllPuzzle)
-router.delete('/:id', verifyToken, deletePuzzle)
+router.delete('/delete', verifyToken, deletePuzzle)
 
 module.exports = router;
