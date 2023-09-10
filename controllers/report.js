@@ -20,7 +20,7 @@ const createReport = async (req, res) => {
         return res.status(400).json({"message":"Report test cannot be empty"})
     }
     const newCategory = new Report({
-        user_id:user.id,
+        user_id:user._id,
         report_text,
         asset_id,
         author:asset.user_id
@@ -103,7 +103,7 @@ else{
            }
       try {
         const report = await Report.findOne({id:report_id});
-        if (user.id===report.author) {
+        if (user._id===report.author) {
             return  res.status(400).json({ message: "Author of asset cannot take action on his asset report" });
            }
         report.$set('action', !report.action);
