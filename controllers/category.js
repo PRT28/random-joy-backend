@@ -8,7 +8,7 @@ const createCategory = async (req, res) => {
       category_title,
       category_description
     } = req.body;
-    const user = req.user;
+    const { user } = req.user;
     if(user.role==2)
     {
       return res.status(400).json({ message: "Only Admins Are allowed to add Category." });
@@ -81,7 +81,7 @@ const updateCategory = async (req, res) => {
 const deleteCategory = async (req, res) => {
   const {id} = req.params;
   try {
-    const user = req.user;
+    const { user } = req.user;
     if(!user || user.role==2)
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to delete Category." });

@@ -193,21 +193,12 @@ const updateAsset = async (req, res) => {
     try {
       const {id} = req.params;
       const { user_id } = req.body;
-      const asset = await Asset.findById(id);
-      if(!asset){
-        res.status(404).json({ message:"Asset doesnot exist." });
-      }
+      const asset = await Asset.findByIdAndDelete(id)
       const oldUrl = asset.url;
       const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
-      if (user_id==asset.user_id) {
-        await asset.deleteOne()
-        const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
-        const allasset = await Asset.find({});
-        res.status(200).json(allasset);
-        
-      } else {
-        res.status(403).json({"message":"You are not the author of asset"})
-      }
+      await asset.deleteOne()
+      const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
+      res.status(200).json(allasset);
     } catch (err) {
       res.status(404).json({ message: err.message });
     }
