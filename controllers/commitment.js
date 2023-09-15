@@ -14,10 +14,16 @@ const createCommitmentOrStatement = async (req, res) => {
     {
         return res.status(400).json({"message":"Invalid commitment or statement type"})
     }
+    let complete=true
+    if(commitment_statement===0 )
+    {
+      complete=false
+    }
     const newCategory = new Commitment({
         user_id:user._id,
         commitment_statement,
-        commitment_text
+        commitment_text,
+        complete
       });
         await newCategory.save();
         res.status(201).json(newCategory);
@@ -110,4 +116,15 @@ const updateCommitment = async (req, res) => {
       res.status(500).json({ error: err.message });
   }
 };
-  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment,updateCommitment}
+const takeAction = async (req, res) => {
+  const{id}=req.params;
+try {
+  const commitment = await Commitment.findById(id);
+  commitment.$set('complete', true);
+  commitment.save()
+  return res.status(200).json(commitment);
+} catch (err) {
+  res.status(404).json({ message: err.message });
+}
+}
+  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment,updateCommitment,takeAction}

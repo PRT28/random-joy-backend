@@ -1,4 +1,5 @@
 const mongoose = require("mongoose");
+const { boolean } = require("webidl-conversions");
 
 
 const commitmentSchema = new  mongoose.Schema(
@@ -14,6 +15,10 @@ const commitmentSchema = new  mongoose.Schema(
   commitment_statement: {
     type: Number,
     required: true, 
+},
+complete: {
+  type: Boolean,
+  required: true, 
 }
 },
   { timestamps: true }

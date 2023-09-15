@@ -102,7 +102,7 @@ else{
             return  res.status(400).json({ message: "User does not have permission to exeute the command." });
            }
       try {
-        const report = await Report.findOne({id:report_id});
+        const report = await Report.findById(report_id);
         if (user._id===report.author) {
             return  res.status(400).json({ message: "Author of asset cannot take action on his asset report" });
            }
