@@ -91,7 +91,7 @@ const updateCommitment = async (req, res) => {
     const { user } = req.user
     if(!user || user.role==2)
     {
-      return  res.status(400).json({ message: "Only Admins Are allowed to add Category." });
+      return  res.status(400).json({ message: "Only Admins Are allowed to update Commitment and statement." });
     }
     const old = await Commitment.findById(id);
     
