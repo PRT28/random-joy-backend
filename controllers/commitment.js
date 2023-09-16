@@ -73,6 +73,7 @@ const getAllCommitment = async (req, res) => {
   const deleteCommitment = async (req, res) => {
     try {
       const {id}=req.params;
+      const { user } = req.user;
       if(user.role===2)
     {
       return res.status(400).json({ message: "Only Admins Are allowed to Delete." });
