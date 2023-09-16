@@ -192,7 +192,7 @@ const updateAsset = async (req, res) => {
   const deleteAsset = async (req, res) => {
     try {
       const {id} = req.params;
-      const { user_id } = req.body;
+      
       const asset = await Asset.findByIdAndDelete(id)
       const oldUrl = asset.url;
       const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];

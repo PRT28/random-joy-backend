@@ -83,7 +83,7 @@ const deleteKeyword = async (req, res) => {
   const { id } = req.query;
   try {
     const { user } = req.user;
-    if(!user || user.role==2)
+    if(!user || user.role===2)
     {
      return  res.status(400).json({ message: "Only Admins Are allowed to delete Keyword." });
     }
