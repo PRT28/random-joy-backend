@@ -58,7 +58,7 @@ const login = async (req, res) => {
     }
     const user = await User.findOne({ email: email});
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
-
+    // if (user.status===false) return res.status(400).json({ msg: "Account is diabled" });
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
@@ -95,7 +95,8 @@ const getAllUser = async (req, res) => {
 
 const changeUserStatus = async (req, res) => {
   try {
-    const user = await User.find({id: req.params.id});
+    const{id}=req.params.id
+    const user = await User.findById(id);
     user.status = !user.status;
     await User.findByIdAndUpdate(id, user)
     .then(() => {
@@ -113,6 +114,68 @@ const authDetails = (req, res) => {
   res.status(200).json({ ...req.user });
 }
 
+const updateUser= async (req, res) => {
+  try {
+    const{id}=req.params.id
+    const {
+      username,
+      email,
+      password,
+      gender,
+      zip_code,
+    } = req.body;
+    const { user } = req.user;
+    if(!user){
+      return  res.status(403).json({"message":"unauthorize"})
+    }
+    const user_present = await User.findById(id);
+    if((user_present._id===user._id)||(user_present.role>user.role ))
+    {
+      await User.findByIdAndUpdate(id,{
+        username,
+        email,
+        password,
+        gender,
+        zip_code,
+        role:user.role
+      } )
+      .then(() => {
+          res.status(201).json({
+            success: true,
+            message: "User updated Successfully"
+          });
+      })
+    }
+    else{
+        res.status(403).json({"message":"unauthorize"})
+    }
+    
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+const permanentDeleteUser=async (req, res) => {
+  try {
+    const{id}=req.params.id
+    const { user } = req.user;
+    const user_present = await User.findById(id);
+    if((user_present._id===user._id)||(user_present.role>user.role ))
+    {
+      await User.findByIdAndDelete(id)
+      .then(() => {
+          res.status(201).json({
+            success: true,
+            message: "User Deleted Successfully"
+          });
+      })
+    }
+    else{
+        res.status(403).json({"message":"unauthorize"})
+    }
 
 
-module.exports={register,login,getAllUser, changeUserStatus,authDetails}
+  }catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+module.exports={register,login,getAllUser, changeUserStatus,authDetails,updateUser,permanentDeleteUser}
