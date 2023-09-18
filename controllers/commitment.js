@@ -14,10 +14,16 @@ const createCommitmentOrStatement = async (req, res) => {
     {
         return res.status(400).json({"message":"Invalid commitment or statement type"})
     }
+    let complete=true
+    if(commitment_statement===0 )
+    {
+      complete=false
+    }
     const newCategory = new Commitment({
         user_id:user._id,
         commitment_statement,
-        commitment_text
+        commitment_text,
+        complete
       });
         await newCategory.save();
         res.status(201).json(newCategory);
@@ -67,7 +73,8 @@ const getAllCommitment = async (req, res) => {
   const deleteCommitment = async (req, res) => {
     try {
       const {id}=req.params;
-      if(user.role==2)
+      const { user } = req.user;
+      if(user.role===2)
     {
       return res.status(400).json({ message: "Only Admins Are allowed to Delete." });
     }
@@ -80,4 +87,45 @@ const getAllCommitment = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   }
-  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment}
+  /* UPDATE */
+const updateCommitment = async (req, res) => {
+  const {id} = req.params;
+  try {
+    const {
+      commitment_statement,
+      commitment_text
+    } = req.body;
+    const { user } = req.user
+    if(!user || user.role==2)
+    {
+      return  res.status(400).json({ message: "Only Admins Are allowed to update Commitment and statement." });
+    }
+    const old = await Commitment.findById(id);
+    
+    if(!old){
+     return res.status(400).json({ message: "Commitment or statement do not exists donot exists."});
+    }
+    
+
+      await Commitment.findByIdAndUpdate(id, {commitment_statement,commitment_text,user_id:user._id}).then(() => res.status(201).json({
+          success: true,
+          message: "Commitment or statement updated successfully"
+        }))
+  
+  
+  } catch(err) {    
+      res.status(500).json({ error: err.message });
+  }
+};
+const takeAction = async (req, res) => {
+  const{id}=req.params;
+try {
+  const commitment = await Commitment.findById(id);
+  commitment.$set('complete', true);
+  commitment.save()
+  return res.status(200).json(commitment);
+} catch (err) {
+  res.status(404).json({ message: err.message });
+}
+}
+  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment,updateCommitment,takeAction}
