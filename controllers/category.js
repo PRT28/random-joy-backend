@@ -31,7 +31,7 @@ const getAllCategory = async (req, res) => {
       const category_title = req.query.search
     if (category_title ) {
       const reg = new RegExp(category_title )
-      const cat = await Category.find({category_title:reg});
+      const cat = await Category.find({category_title:'mystrey'});
       res.status(200).json(cat); 
     }else{  
       const category = await Category.find();
