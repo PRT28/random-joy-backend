@@ -204,8 +204,21 @@ const updateAsset = async (req, res) => {
     }
   };
 
-  
-  
+  const deleteOld = async (req, res) => {
+    const x = new Date();
+    x.setDate(x.getDate() - 7);
+    console.log(x);
+    try {
+      await Asset.deleteMany({
+        createdAt: { $gt: x }
+      });
+      res.status(200).json({ message: 'Old assets deleted successfully' });
+    } 
+    catch (err) {
+      console.error(err);
+      res.status(400).json({ message: err.message});
+    }
+  };
   
   const updateAssetStatus = async (req, res) => {
     try {
@@ -228,4 +241,4 @@ const updateAsset = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   }
-  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset}
+  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset,deleteOld}
