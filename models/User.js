@@ -34,8 +34,24 @@ const UserSchema = new Schema({
   },
   role: {
     type: Number,
-    required: true
-  }
+    required: true,
+  },
+  interests: {
+    type: Array,
+    required: true,
+  },
+  preferences:{
+    type: Number,
+    required: true,
+  },
+  completed_task:{
+    type: Number,
+    required: 0,
+  },
+  uncompleted_task:{
+    type: Number,
+    required: 0,
+},
 },
 { timestamps: true }
 );

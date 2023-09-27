@@ -23,6 +23,5 @@ router.delete("comment/delete/:id",verifyToken, deleteComment)
 router.patch("/status/:id", verifyToken, updateAssetStatus)
 /* DELETE POST */
 router.delete("/delete/:id", verifyToken, deleteAsset)
-
-
+// router.delete("/deleteOld/:id", deleteOld)
 module.exports= router;
