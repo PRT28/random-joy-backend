@@ -2,7 +2,10 @@ const Asset  =require( "../models/Asset.js");
 const User =require("../models/User.js");
 const Category =require("../models/Category.js");
 
-const cloudinary = require("../configs/cloudinary.js")
+const cloudinary = require("../configs/cloudinary.js");
+const LikesModel = require("../models/Likes.js");
+const DisLikesModel = require("../models/Dislike.js");
+const commentModel = require("../models/Comments.js");
 
 /* CREATE */
  const createAsset = async (req, res) => {
@@ -114,29 +117,46 @@ const getAllWack = async (req, res) => {
   try {
     const { id } = req.params;
     const { user } = req.user
-    const asset = await Asset.findById(id);
-    if(!asset){
-      res.status(401).json({ message: "Asset Not Found" })
-    }
-    const isLiked = asset.likes.get(user._id);
-    if (isLiked==1) {
-      asset.likes.delete(user._id);
-      asset.like_count=asset.like_count-1;
-    } else {
-      asset.likes.set(user._id, 1);
-      asset.like_count=asset.like_count+1;
-    }
-    const updatedAsset = await Asset.findByIdAndUpdate(
-      id,
-      { likes: asset.likes,like_count:asset.like_count },
-      { new: true }
-    );
-
-    res.status(200).json(updatedAsset);
-  } catch (err) {
-    res.status(404).json({ message: err.message });
-  }
-};
+    const newlike= new LikesModel({
+      user_id:user._id,
+      asset_id:id
+    })
+    await newlike.save()
+    res.status(200).json({"message":"liked successfully"})
+}catch(err){
+  res.status(500).json({"message":err.message})
+}
+ };
+ const dislikeAsset = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.user
+    const newdislike= new DisLikesModel({
+      user_id:user._id,
+      asset_id:id
+    })
+    await newdislike.save()
+    res.status(200).json({"message":"liked successfully"})
+}catch(err){
+  res.status(500).json({"message":err.message})
+}
+ };
+ const commentAsset = async (req, res) => {
+  try {
+    const { id } = req.params;
+    const { user } = req.user
+    const {comment}= req.body
+    const newlike= new commentModel({
+      user_id:user._id,
+      asset_id:id,
+      comment
+    })
+    await newlike.save()
+    res.status(200).json({"message":"liked successfully"})
+}catch(err){
+  res.status(500).json({"message":err.message})
+}
+ };
 const updateAsset = async (req, res) => {
   try {
     const {id} = req.params;
@@ -184,19 +204,31 @@ const updateAsset = async (req, res) => {
       const allasset = await Asset.find({});
       res.status(200).json(allasset);
       
-  } catch (err) {
+  } catch (err){
     res.status(500).json({ message: err.message });
   }
 }
   /* DELETE POST */
+
+  const deleteComment = async (req, res) => {
+    try {
+      const {id} = req.params;
+      
+      const asset = await commentModel.findByIdAndDelete(id)
+      res.status(200).json({"message":"comment deleted successfully"})
+  
+    } catch (err) {
+      res.status(500).json({ message: err.message });
+    }
+  };
   const deleteAsset = async (req, res) => {
     try {
       const {id} = req.params;
       
-      const asset = await Asset.findByIdAndDelete(id)
+      const asset = await Asset.findById(id)
       const oldUrl = asset.url;
       const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
-      await asset.deleteOne()
+      await Asset.findByIdAndDelete(id)
       const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
       res.status(200).json(allasset);
     } catch (err) {
@@ -228,4 +260,4 @@ const updateAsset = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   }
-  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset}
+  module.exports ={updateAssetStatus, createAsset,getFeedAssets,deleteComment,getUserAssets,getAllJoy,getAllWack,likeAsset,dislikeAsset,commentAsset,updateAsset,deleteAsset}
