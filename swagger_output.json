@@ -122,6 +122,120 @@
           }
         ],
         "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/update/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "username": {
+                  "example": "any"
+                },
+                "email": {
+                  "example": "any"
+                },
+                "password": {
+                  "example": "any"
+                },
+                "gender": {
+                  "example": "any"
+                },
+                "zip_code": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/disableuser/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/auth/delete/{id}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
           "403": {
             "description": "Forbidden"
           },
@@ -177,6 +291,9 @@
                   "example": "any"
                 },
                 "keyword_name": {
+                  "example": "any"
+                },
+                "name": {
                   "example": "any"
                 },
                 "category_name": {
@@ -266,7 +383,7 @@
         }
       }
     },
-    "/asset/{user_id}/assets": {
+    "/asset/user/{user_id}": {
       "get": {
         "description": "",
         "parameters": [
@@ -298,7 +415,7 @@
         }
       }
     },
-    "/asset/{id}/update": {
+    "/asset/update/{id}": {
       "put": {
         "description": "",
         "parameters": [
@@ -319,6 +436,9 @@
             "schema": {
               "type": "object",
               "properties": {
+                "url": {
+                  "example": "any"
+                },
                 "description": {
                   "example": "any"
                 },
@@ -328,10 +448,16 @@
                 "category_name": {
                   "example": "any"
                 },
+                "name": {
+                  "example": "any"
+                },
                 "asset_type": {
                   "example": "any"
                 },
                 "asset_category": {
+                  "example": "any"
+                },
+                "upload_type": {
                   "example": "any"
                 }
               }
@@ -341,6 +467,9 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "201": {
+            "description": "Created"
           },
           "400": {
             "description": "Bad Request"
@@ -357,8 +486,8 @@
         }
       }
     },
-    "/asset/{id}/like": {
-      "put": {
+    "/asset/like/{id}": {
+      "post": {
         "description": "",
         "parameters": [
           {
@@ -376,6 +505,108 @@
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/asset/dislike/{id}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/asset/comment/{id}": {
+      "post": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "comment": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/asset/status/{id}": {
+      "patch": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "401": {
             "description": "Unauthorized"
@@ -392,51 +623,7 @@
         }
       }
     },
-    "/asset/{id}/dislike": {
-      "put": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "id",
-            "in": "path",
-            "required": true,
-            "type": "string"
-          },
-          {
-            "name": "Authorization",
-            "in": "header",
-            "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                }
-              }
-            }
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/asset/{id}/delete": {
+    "/asset/delete/{id}": {
       "delete": {
         "description": "",
         "parameters": [
@@ -450,18 +637,6 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
-          },
-          {
-            "name": "body",
-            "in": "body",
-            "schema": {
-              "type": "object",
-              "properties": {
-                "user_id": {
-                  "example": "any"
-                }
-              }
-            }
           }
         ],
         "responses": {
@@ -527,37 +702,10 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
-          }
-        ],
-        "responses": {
-          "200": {
-            "description": "OK"
-          },
-          "403": {
-            "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
-          },
-          "500": {
-            "description": "Internal Server Error"
-          }
-        }
-      }
-    },
-    "/category/{category_title}": {
-      "get": {
-        "description": "",
-        "parameters": [
-          {
-            "name": "category_title",
-            "in": "path",
-            "required": true,
-            "type": "string"
           },
           {
-            "name": "Authorization",
-            "in": "header",
+            "name": "search",
+            "in": "query",
             "type": "string"
           }
         ],
@@ -577,12 +725,12 @@
         }
       }
     },
-    "/category/update/{category_title}": {
+    "/category/update/{id}": {
       "put": {
         "description": "",
         "parameters": [
           {
-            "name": "category_title",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -624,12 +772,12 @@
         }
       }
     },
-    "/category/delete/{category_title}": {
+    "/category/delete/{id}": {
       "delete": {
         "description": "",
         "parameters": [
           {
-            "name": "category_title",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -722,6 +870,11 @@
             "type": "string"
           },
           {
+            "name": "puzzleId",
+            "in": "query",
+            "type": "string"
+          },
+          {
             "name": "body",
             "in": "body",
             "schema": {
@@ -809,7 +962,7 @@
         }
       }
     },
-    "/puzzle/getAllPuzzle": {
+    "/puzzle/": {
       "get": {
         "description": "",
         "parameters": [
@@ -817,11 +970,47 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
           "200": {
             "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/puzzle/delete": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "id",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
           },
           "403": {
             "description": "Forbidden"
@@ -882,6 +1071,11 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "username",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -900,12 +1094,12 @@
         }
       }
     },
-    "/report/{username}": {
-      "get": {
+    "/report/takeaction/{report_id}": {
+      "patch": {
         "description": "",
         "parameters": [
           {
-            "name": "username",
+            "name": "report_id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -920,6 +1114,9 @@
           "200": {
             "description": "OK"
           },
+          "400": {
+            "description": "Bad Request"
+          },
           "403": {
             "description": "Forbidden"
           },
@@ -932,12 +1129,12 @@
         }
       }
     },
-    "/report/{report_id}": {
-      "patch": {
+    "/report/{id}": {
+      "delete": {
         "description": "",
         "parameters": [
           {
-            "name": "report_id",
+            "name": "id",
             "in": "path",
             "required": true,
             "type": "string"
@@ -1016,6 +1213,11 @@
             "name": "Authorization",
             "in": "header",
             "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
           }
         ],
         "responses": {
@@ -1036,6 +1238,119 @@
     },
     "/commitmentandstatement/statement": {
       "get": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/commitmentandstatement/delete/{id}": {
+      "delete": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          }
+        ],
+        "responses": {
+          "200": {
+            "description": "OK"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "404": {
+            "description": "Not Found"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/commitmentandstatement/update/{id}": {
+      "put": {
+        "description": "",
+        "parameters": [
+          {
+            "name": "id",
+            "in": "path",
+            "required": true,
+            "type": "string"
+          },
+          {
+            "name": "Authorization",
+            "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "body",
+            "in": "body",
+            "schema": {
+              "type": "object",
+              "properties": {
+                "commitment_statement": {
+                  "example": "any"
+                },
+                "commitment_text": {
+                  "example": "any"
+                }
+              }
+            }
+          }
+        ],
+        "responses": {
+          "201": {
+            "description": "Created"
+          },
+          "400": {
+            "description": "Bad Request"
+          },
+          "403": {
+            "description": "Forbidden"
+          },
+          "500": {
+            "description": "Internal Server Error"
+          }
+        }
+      }
+    },
+    "/commitmentandstatement/complete": {
+      "patch": {
         "description": "",
         "parameters": [
           {
@@ -1106,6 +1421,11 @@
           {
             "name": "Authorization",
             "in": "header",
+            "type": "string"
+          },
+          {
+            "name": "search",
+            "in": "query",
             "type": "string"
           }
         ],

@@ -1,7 +1,5 @@
 const mongoose = require("mongoose");
-
-
-const likeSchema = new  mongoose.Schema(
+const disLikeSchema = new  mongoose.Schema(
   {
     user_id: {type:mongoose.Schema.Types.ObjectId,ref:"user",
       required: true,
@@ -12,6 +10,6 @@ const likeSchema = new  mongoose.Schema(
 }
 );
 
-const LikesModel = mongoose.model("like", likeSchema);
+const DisLikesModel = mongoose.model("dislikes", disLikeSchema);
 
-module.exports  = LikesModel;
+module.exports  = DisLikesModel;

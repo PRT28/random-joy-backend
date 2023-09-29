@@ -30,7 +30,7 @@ app.use(cors(corsOptions));
 app.use(express.json());
 app.use(cookieParser());
 const CONNECTION_URL = process.env.DB_URL;
-const PORT = process.env.Port || 4001;
+const PORT = process.env.Port || 3000;
 app.use("/auth", authRoutes);
 app.use("/asset",assetRoutes)
 app.use("/category",categoryRoutes)

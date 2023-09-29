@@ -24,11 +24,6 @@ const assetSchema = new  mongoose.Schema(
       type: String,
       required: true,
     },
-    likes:{
-      type: Map,
-      of: Number,
-    default:{}
-  },
   isActive:{
     type:Boolean,
     default: true
