@@ -11,6 +11,10 @@ const sub_sub_categorySchema = new  mongoose.Schema(
     description: {
         type: String,
       required: true,
+    },
+    sub_category_id:{
+        type:Array,
+        of: mongoose.Schema.Types.ObjectId,ref:"sub_category",    
     }
 },
   { timestamps: true }

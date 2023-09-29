@@ -11,15 +11,7 @@ const categorySchema = new  mongoose.Schema(
     category_description: {
         type: String,
       required: true,
-    },
-    sub_category_id:{
-      type:Array,
-      of: mongoose.Schema.Types.ObjectId,ref:"sub_category",    
-  },
-  sub_sub_category_id:{
-    type:Array,
-    of: mongoose.Schema.Types.ObjectId,ref:"sub_sub_category",    
-}
+    }
 },
   { timestamps: true }
   
