@@ -1,14 +1,13 @@
 const  express = require("express");
-const {createCategory,getCategory,getAllCategory,deleteCategory,updateCategory } =require( "../controllers/category");
-const multer=require("multer")
+const {createCategory,getAllCategory,deleteCategory,updateCategory } =require( "../controllers/category");
+
 const  verifyToken  = require( "../middleware/auth.js");
-const upload = multer({ storage: multer.diskStorage({}),
-limits: { fileSize: 10000000 } });
+
 
 const router = express.Router();
 
 /* CREATE */
-router.post("/", verifyToken,upload.single("filepath"),createCategory);
+router.post("/",createCategory);
 
 /* GET */
 router.get("/", verifyToken, getAllCategory);
