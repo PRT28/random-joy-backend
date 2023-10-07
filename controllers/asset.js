@@ -354,7 +354,32 @@ const updateAsset = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   };
+  const shareAsset= async (req, res) => {
+    
+    try{
+      const { id } = req.params;
+      const { user } = req.user;
 
+      let assetSeen= cache.get('asset_seen');
+      if ( assetSeen == undefined ){
+        const success=cache.set('asset_seen',{});
+        assetSeen={};
+    }
+    if(!assetSeen[id]){
 
+    }
+     const newusers=User.aggregate([{ $match: { id:{
+      $nin:assetSeen[id]
+    }}},{ $sample: { size: 5 }}])
+      assetSeen.append()  
+      for(let i = 0; i < newusers.length; i++){
+        assetSeen[id].append(newusers[i]["_id"]);
+      }
+      const success=cache.set('asset_seen',assetSeen);
+
+    }catch(err){
+      res.status(404).json({ message: err.message });
+    }
+  }
 
   module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset,deleteOld, dislikeAsset,commentAsset, deleteComment, randomAsset}
