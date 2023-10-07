@@ -46,12 +46,16 @@ const UserSchema = new Schema({
   },
   completed_task:{
     type: Number,
-    required: 0,
+    required: true,
   },
   uncompleted_task:{
     type: Number,
-    required: 0,
-},
+    required: true,
+  },
+  last_seen_ad: {
+    type: Date,
+    required: true,
+  }
 },
 { timestamps: true }
 );
