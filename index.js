@@ -12,6 +12,17 @@ const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger_output.json')
 const multer = require("multer");
 const helmet =require("helmet");
+const NodeCache = require( "node-cache" );
+
+const cache = new NodeCache();
+
+cache.set('puzzleCount', 0);
+cache.set('commitmentCount', 0);
+cache.set('statementCount', 0);
+cache.set('mysteryCount', 0);
+cache.set('normalCount', 0);
+
+
 app.use(helmet());
 const authRoutes = require("./routes/auth.js");
 const assetRoutes = require("./routes/asset.js");
@@ -26,7 +37,6 @@ var corsOptions = {
   credentials: true,
   origin: true
 };
-
 
 app.use(cors(corsOptions));
 app.use(express.json());

@@ -4,7 +4,7 @@ const mongoose = require("mongoose");
 
 const assetSchema = new  mongoose.Schema(
   {
-    user_id: {
+    add_user: {
     type:mongoose.Schema.Types.ObjectId,ref:"user",
     required: true,
   },
@@ -37,8 +37,22 @@ const assetSchema = new  mongoose.Schema(
       type: Number,
       required: true,
     },
-    like_count:{type:Number,default:0},
-    share_count:{type:Number,default:0},
+    sub_category_id: {
+      type:mongoose.Schema.Types.ObjectId,ref:"sub_category",
+      required: true,
+    },
+    sub_sub_category_id: {
+      type:mongoose.Schema.Types.ObjectId,ref:"sub_sub_category",
+      required: true,
+    },
+    is_announcemnet: {
+      type: Boolean,
+      required: true,
+    },
+    mod_user: {
+      type:mongoose.Schema.Types.ObjectId,ref:"user",
+      required: true,
+    }
   },
   { timestamps: true }
 );

@@ -1,4 +1,5 @@
 const Commitment= require("../models/Commitment.js");
+const shuffle = require('../middleware/helper.js');
 
 /* CREATE */
 const createCommitmentOrStatement = async (req, res) => {
@@ -129,23 +130,8 @@ const takeAction = async (req, res) => {
   }
 }
 
-function shuffle(array) {
-  let currentIndex = array.length,  randomIndex;
-
-  while (currentIndex > 0) {
-
-    randomIndex = Math.floor(Math.random() * currentIndex);
-    currentIndex--;
-
-    [array[currentIndex], array[randomIndex]] = [
-      array[randomIndex], array[currentIndex]];
-  }
-
-  return array;
-}
-
 const randomCommitment = async (req, res) => {
-  const user = req.user;
+  const {user} = req.user;
   try {
     const commitments = Commitment.find({
       $and: [
@@ -165,7 +151,7 @@ const randomCommitment = async (req, res) => {
 }
 
 const randomStatement = async (req, res) => {
-  const user = req.user;
+  const {user} = req.user;
   try {
     const commitments = Commitment.find({
       $and: [

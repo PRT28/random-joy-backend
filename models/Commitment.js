@@ -37,6 +37,6 @@ const commitmentSchema = new  mongoose.Schema(
   
 );
 
-const CommitmentModel = mongoose.model("commitment", commitmentSchema);
+const CommitmentModel = mongoose.model("suggestion", commitmentSchema);
 
 module.exports  = CommitmentModel;
