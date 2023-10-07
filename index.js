@@ -21,7 +21,7 @@ cache.set('commitmentCount', 0);
 cache.set('statementCount', 0);
 cache.set('mysteryCount', 0);
 cache.set('normalCount', 0);
-
+cache.set('asset_seen', 0);
 
 app.use(helmet());
 const authRoutes = require("./routes/auth.js");
