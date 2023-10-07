@@ -8,18 +8,30 @@ const commitmentSchema = new  mongoose.Schema(
       type:mongoose.Schema.Types.ObjectId,ref:"user",
       required: true,
     },
-    commitment_text: {
+    suggestion_text: {
       type: String,
       required: true, 
   },
-  commitment_statement: {
+  is_commitment: {
     type: Number,
     required: true, 
-},
-complete: {
-  type: Boolean,
-  required: true, 
-}
+  },
+  complete: {
+    type: Boolean,
+    required: true, 
+  },
+  add_user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
+  mod_user: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  },
+  category_id: {
+    type: mongoose.Schema.Types.ObjectId,
+    required: true
+  }
 },
   { timestamps: true }
   

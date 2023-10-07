@@ -119,13 +119,68 @@ const updateCommitment = async (req, res) => {
 };
 const takeAction = async (req, res) => {
   const{id}=req.params;
-try {
-  const commitment = await Commitment.findById(id);
-  commitment.$set('complete', true);
-  commitment.save()
-  return res.status(200).json(commitment);
-} catch (err) {
-  res.status(404).json({ message: err.message });
+  try {
+    const commitment = await Commitment.findById(id);
+    commitment.$set('complete', true);
+    commitment.save()
+    return res.status(200).json(commitment);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
 }
+
+function shuffle(array) {
+  let currentIndex = array.length,  randomIndex;
+
+  while (currentIndex > 0) {
+
+    randomIndex = Math.floor(Math.random() * currentIndex);
+    currentIndex--;
+
+    [array[currentIndex], array[randomIndex]] = [
+      array[randomIndex], array[currentIndex]];
+  }
+
+  return array;
 }
-  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment,updateCommitment,takeAction}
+
+const randomCommitment = async (req, res) => {
+  const user = req.user;
+  try {
+    const commitments = Commitment.find({
+      $and: [
+        {category_id: {
+          $in: user.interests
+        }},
+        {
+          is_commitment: true
+        }
+      ]
+    });
+    const output = shuffle(commitments)
+    return res.status(200).json(output.slice(0, 3));
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
+const randomStatement = async (req, res) => {
+  const user = req.user;
+  try {
+    const commitments = Commitment.find({
+      $and: [
+        {category_id: {
+          $in: user.interests
+        }},
+        {
+          is_commitment: false
+        }
+      ]
+    });
+    const output = shuffle(commitments)
+    return res.status(200).json(output.slice(0, 3));
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment,updateCommitment,takeAction, randomCommitment, randomStatement}
