@@ -11,6 +11,7 @@ const User= require("../models/User.js");
       email,
       password,
       gender,
+      zip_code,
       role    } = req.body;
 
     const salt = await bcrypt.genSalt();
@@ -65,6 +66,7 @@ const login = async (req, res) => {
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
     // if (user.status===false) return res.status(400).json({ msg: "Account is diabled" });
     const isMatch = await bcrypt.compare(password, user.password);
+    console.log(user.password)
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
     const token = jwt.sign({user}, process.env.JWT_SECRET,{
@@ -100,7 +102,7 @@ const getAllUser = async (req, res) => {
 
 const changeUserStatus = async (req, res) => {
   try {
-    const{id}=req.params.id
+    const{id}=req.params
     const user = await User.findById(id);
     user.status = !user.status;
     await User.findByIdAndUpdate(id, user)
@@ -121,7 +123,7 @@ const authDetails = (req, res) => {
 
 const updateUser= async (req, res) => {
   try {
-    const{id}=req.params.id
+    const{ id }=req.params
     const {
       username,
       email,
@@ -130,16 +132,18 @@ const updateUser= async (req, res) => {
       zip_code,
     } = req.body;
     const { user } = req.user;
+    const salt = await bcrypt.genSalt();
+    const passwordHash = await bcrypt.hash(password, salt);
     if(!user){
       return  res.status(403).json({"message":"unauthorize"})
     }
     const user_present = await User.findById(id);
-    if((user_present._id===user._id)||(user_present.role>user.role ))
+    if((user_present.id===user._id)||(user_present.role>user.role ))
     {
       await User.findByIdAndUpdate(id,{
         username,
         email,
-        password,
+        password:passwordHash,
         gender,
         zip_code,
         role:user.role
@@ -161,7 +165,7 @@ const updateUser= async (req, res) => {
 }
 const permanentDeleteUser=async (req, res) => {
   try {
-    const{id}=req.params.id
+    const{id}=req.params
     const { user } = req.user;
     const user_present = await User.findById(id);
     if((user_present._id===user._id)||(user_present.role>user.role ))
@@ -187,7 +191,7 @@ const permanentDeleteUser=async (req, res) => {
 const updateUserInterest = async (req, res) => {
 
   try {
-    const {id} = req.params.id
+    const {id} = req.params
     const interests = req.body
     const user = await User.findById(id);
     user.interests = interests;
@@ -205,7 +209,7 @@ const updateUserInterest = async (req, res) => {
 
 const skipInterest = async (req, res) => {
   try {
-    const {id} = req.params.id;
+    const {id} = req.params;
     const user = await User.findById(id);
     user.is_skipped = true;
     await User.findByIdAndUpdate(id, user).then(() => {
