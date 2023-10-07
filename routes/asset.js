@@ -1,5 +1,5 @@
 const  express = require("express");
-const {createAsset, getFeedAssets,getAllJoy,getAllWack, getUserAssets, likeAsset,deleteAsset,dislikeAsset,commentAsset, deleteComment,updateAsset ,updateAssetStatus} =require( "../controllers/asset.js");
+const {createAsset, getFeedAssets,getAllJoy,getAllWack, getUserAssets, likeAsset,deleteAsset,dislikeAsset,commentAsset, deleteComment,updateAsset ,updateAssetStatus, randomAsset} =require( "../controllers/asset.js");
 const multer=require("multer")
 const  verifyToken  = require( "../middleware/auth.js");
 const upload = multer({ storage: multer.diskStorage({}),
@@ -23,5 +23,6 @@ router.delete("comment/delete/:id",verifyToken, deleteComment)
 router.patch("/status/:id", verifyToken, updateAssetStatus)
 /* DELETE POST */
 router.delete("/delete/:id", verifyToken, deleteAsset)
+router.get('/random/asset', verifyToken, randomAsset);
 // router.delete("/deleteOld/:id", deleteOld)
 module.exports= router;
