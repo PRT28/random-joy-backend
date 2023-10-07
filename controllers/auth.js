@@ -11,8 +11,7 @@ const User= require("../models/User.js");
       email,
       password,
       gender,
-      zip_code,
-    } = req.body;
+      role    } = req.body;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
@@ -24,7 +23,13 @@ const User= require("../models/User.js");
       password: passwordHash,
       gender,
       zip_code,
-      role:1
+      role,
+      interests: [],
+      completed_task: 0,
+      uncompleted_task: 0,
+      last_seen_ad: new Date().toISOString(),
+      is_skipped: false,
+  
     });
     const savedUser = await newUser.save();
     const {password: pwd, ...filteredUser} = savedUser 
@@ -178,4 +183,41 @@ const permanentDeleteUser=async (req, res) => {
     res.status(500).json({ error: err.message });
   }
 }
-module.exports={register,login,getAllUser, changeUserStatus,authDetails,updateUser,permanentDeleteUser}
+
+const updateUserInterest = async (req, res) => {
+
+  try {
+    const {id} = req.params.id
+    const interests = req.body
+    const user = await User.findById(id);
+    user.interests = interests;
+    await User.findByIdAndUpdate(id, user).then(() => {
+      res.status(201).json({
+        success: true,
+        message: "User Interests Updated Successfully"
+      });
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+
+};
+
+const skipInterest = async (req, res) => {
+  try {
+    const {id} = req.params.id;
+    const user = await User.findById(id);
+    user.is_skipped = true;
+    await User.findByIdAndUpdate(id, user).then(() => {
+      res.status(201).json({
+        success: true,
+        message: "Interest selection skipped"
+      });
+    });
+  } catch (err) {
+    res.status(500).json({ error: err.message });
+  }
+}
+
+
+module.exports={register,login,getAllUser, changeUserStatus,authDetails,updateUser,permanentDeleteUser, updateUserInterest, skipInterest}

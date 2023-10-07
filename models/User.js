@@ -55,6 +55,10 @@ const UserSchema = new Schema({
   last_seen_ad: {
     type: Date,
     required: true,
+  },
+  is_skipped: {
+    type: Boolean,
+    requied: true,
   }
 },
 { timestamps: true }
