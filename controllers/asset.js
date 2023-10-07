@@ -273,4 +273,4 @@ const updateAsset = async (req, res) => {
       res.status(404).json({ message: err.message });
     }
   }
-  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset,deleteOld}
+  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset,deleteOld, dislikeAsset,commentAsset, deleteComment}
