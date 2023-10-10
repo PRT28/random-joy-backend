@@ -11,7 +11,8 @@ const User= require("../models/User.js");
       email,
       password,
       gender,
-      role    } = req.body;
+      role,
+      zip_code    } = req.body;
 
     const salt = await bcrypt.genSalt();
     const passwordHash = await bcrypt.hash(password, salt);
