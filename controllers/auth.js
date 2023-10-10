@@ -30,6 +30,7 @@ const User= require("../models/User.js");
       uncompleted_task: 0,
       last_seen_ad: new Date().toISOString(),
       is_skipped: false,
+      preferences: 0
   
     });
     const savedUser = await newUser.save();
