@@ -52,7 +52,10 @@ app.use("/puzzle", puzzleRoutes);
 app.use("/report", reportRoutes);
 app.use("/commitmentandstatement", commitmentAndStatementRoutes);
 app.use("/keywords", keywordsRoute);
-app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile))
+app.use('/doc', swaggerUi.serve, swaggerUi.setup(swaggerFile));
+app.get('/crash', () => {
+  process.exit();
+});
 mongoose
   .connect(CONNECTION_URL, { useNewUrlParser: true, useUnifiedTopology: true })
   .then(() =>

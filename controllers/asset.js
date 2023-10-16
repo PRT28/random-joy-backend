@@ -281,7 +281,7 @@ const updateAsset = async (req, res) => {
   const randomAsset = async (req, res) => {
     try {
       const {user} = req.user;
-      const assets = Asset.find({
+      const assets = await Asset.find({
         $and: [
           {category_id: {
             $in: user.interests
@@ -291,6 +291,7 @@ const updateAsset = async (req, res) => {
           }
         ]
       });
+      console.log(assets);
       const output = shuffle(assets);
       const asset = {...output[0]};
 
@@ -349,7 +350,7 @@ const updateAsset = async (req, res) => {
         }
       }
 
-      return res.status(200).json(output.slice(0, 3));
+      return res.status(200).json(asset);
     } catch(err){
       res.status(404).json({ message: err.message });
     }

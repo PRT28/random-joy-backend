@@ -133,7 +133,7 @@ const takeAction = async (req, res) => {
 const randomCommitment = async (req, res) => {
   const {user} = req.user;
   try {
-    const commitments = Commitment.find({
+    const commitments = await Commitment.find({
       $and: [
         {category_id: {
           $in: user.interests
@@ -153,7 +153,7 @@ const randomCommitment = async (req, res) => {
 const randomStatement = async (req, res) => {
   const {user} = req.user;
   try {
-    const commitments = Commitment.find({
+    const commitments = await Commitment.find({
       $and: [
         {category_id: {
           $in: user.interests

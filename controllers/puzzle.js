@@ -1,5 +1,5 @@
-const { default: mongoose } = require("mongoose");
 const Puzzle = require("../models/Puzzle")
+const shuffle = require('../middleware/helper.js');
 
 const addPuzzle = async (req, res) => {
     try {
@@ -155,4 +155,17 @@ const getAllPuzzle = async (req, res) => {
     }
   }
 
-module.exports = {addPuzzle, checkAnswer, updatePuzzle, getAllPuzzle, deletePuzzle}
+
+  const randomPuzzle = async (req, res) => {
+    try {
+      const assets = await Puzzle.find({});
+      const output = shuffle(assets);
+      const asset = output[0];
+
+      return res.status(200).json(asset);
+    } catch(err){
+      res.status(404).json({ message: err.message });
+    }
+  };
+
+module.exports = {addPuzzle, checkAnswer, updatePuzzle, getAllPuzzle, deletePuzzle, randomPuzzle}
