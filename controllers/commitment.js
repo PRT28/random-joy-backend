@@ -5,26 +5,30 @@ const shuffle = require('../middleware/helper.js');
 const createCommitmentOrStatement = async (req, res) => {
   try {
     const {
-      commitment_statement,
-      commitment_text
+      is_commitment,
+      suggestion_text,
+      category_id
     } = req.body;
     console.log(req.body)
 
     const { user } = req.user;
-    if(commitment_statement!==1 && commitment_statement!==0 )
+    if(is_commitment!==1 && is_commitment!==0 )
     {
         return res.status(400).json({"message":"Invalid commitment or statement type"})
     }
     let complete=true
-    if(commitment_statement===0 )
+    if(is_commitment===0 )
     {
       complete=false
     }
     const newCategory = new Commitment({
         user_id:user._id,
-        commitment_statement,
-        commitment_text,
-        complete
+        is_commitment,
+        suggestion_text,
+        complete,
+        add_user:user._id,
+        mod_user:user._id,
+        category_id
       });
         await newCategory.save();
         res.status(201).json(newCategory);
@@ -40,12 +44,12 @@ const getAllCommitment = async (req, res) => {
       if ( search ) {
         const reg = new RegExp(search)
         const category = await Commitment.find({$and: [
-          {commitment_statement:0},
-          {commitment_text: reg}
+          {is_commitment:0},
+          {suggestion_text_: reg}
         ]});
        res.status(200).json(category);
       } else {
-        const category = await Commitment.find({commitment_statement:0});
+        const category = await Commitment.find({is_commitment:0});
         res.status(200).json(category);
       }
     } catch (err) {
@@ -58,12 +62,12 @@ const getAllCommitment = async (req, res) => {
       if ( search ) {
         const reg = new RegExp(search)
         const category = await Commitment.find({$and: [
-          {commitment_statement:1},
-          {commitment_text: reg}
+          {is_commitment:1},
+          {suggestion_text: reg}
         ]});
         res.status(200).json(category);
       } else {
-        const category = await Commitment.find({commitment_statement:1});
+        const category = await Commitment.find({is_commitment:1});
         res.status(200).json(category);
       }
     } catch (err) {
@@ -133,18 +137,26 @@ const takeAction = async (req, res) => {
 const randomCommitment = async (req, res) => {
   const {user} = req.user;
   try {
-    const commitments = await Commitment.find({
-      $and: [
-        {category_id: {
-          $in: user.interests
-        }},
-        {
-          is_commitment: true
-        }
-      ]
-    });
-    const output = shuffle(commitments)
-    return res.status(200).json(output.slice(0, 3));
+    if (user.interests.length !== 0) {
+      const commitments = await Commitment.find({
+        $and: [
+          {category_id: {
+            $in: user.interests
+          }},
+          {
+            is_commitment: 0
+          }
+        ]
+      });
+      const output = shuffle(commitments)
+      return res.status(200).json(output.slice(0, 3));
+    } else {
+      const commitments = await Commitment.find({
+        is_commitment: 0
+      });
+      const output = shuffle(commitments)
+      return res.status(200).json(output.slice(0, 3));
+    }
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -153,18 +165,26 @@ const randomCommitment = async (req, res) => {
 const randomStatement = async (req, res) => {
   const {user} = req.user;
   try {
-    const commitments = await Commitment.find({
-      $and: [
-        {category_id: {
-          $in: user.interests
-        }},
-        {
-          is_commitment: false
-        }
-      ]
-    });
-    const output = shuffle(commitments)
-    return res.status(200).json(output.slice(0, 3));
+    if (user.interests.length !== 0) {
+      const commitments = await Commitment.find({
+        $and: [
+          {category_id: {
+            $in: user.interests
+          }},
+          {
+            is_commitment: 1
+          }
+        ]
+      });
+      const output = shuffle(commitments)
+      return res.status(200).json(output.slice(0, 3));
+    } else {
+      const commitments = await Commitment.find({
+        is_commitment: 1
+      });
+      const output = shuffle(commitments)
+      return res.status(200).json(output.slice(0, 3));
+    }
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
