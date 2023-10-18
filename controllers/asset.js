@@ -228,12 +228,16 @@ const updateAsset = async (req, res) => {
   const deleteAsset = async (req, res) => {
     try {
       const {id} = req.params;
-      
       const asset = await Asset.findById(id)
       const oldUrl = asset.url;
       const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
       await Asset.findByIdAndDelete(id)
-      const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
+      try{
+        const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
+      }catch (err) {
+        console.log(err);
+      }
+      
       res.status(200).json(allasset);
     } catch (err) {
       res.status(404).json({ message: err.message });

@@ -101,11 +101,6 @@ const updateCommitment = async (req, res) => {
     {
       return  res.status(400).json({ message: "Only Admins Are allowed to update Commitment and statement." });
     }
-    const old = await Commitment.findById(id);
-    
-    if(!old){
-     return res.status(400).json({ message: "Commitment or statement do not exists donot exists."});
-    }
     
 
       await Commitment.findByIdAndUpdate(id, {commitment_statement,commitment_text,user_id:user._id}).then(() => res.status(201).json({
