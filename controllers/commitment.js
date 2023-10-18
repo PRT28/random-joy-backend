@@ -7,7 +7,8 @@ const createCommitmentOrStatement = async (req, res) => {
     const {
       is_commitment,
       suggestion_text,
-      category_id
+      category_id,
+      suggestion_image
     } = req.body;
     console.log(req.body)
 
@@ -28,7 +29,8 @@ const createCommitmentOrStatement = async (req, res) => {
         complete,
         add_user:user._id,
         mod_user:user._id,
-        category_id
+        category_id,
+        suggestion_image
       });
         await newCategory.save();
         res.status(201).json(newCategory);
@@ -127,7 +129,7 @@ const takeAction = async (req, res) => {
   try {
     const commitment = await Commitment.findById(id);
     commitment.$set('complete', true);
-    commitment.save()
+    commitment.save();
     return res.status(200).json(commitment);
   } catch (err) {
     res.status(404).json({ message: err.message });

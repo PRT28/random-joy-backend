@@ -72,7 +72,7 @@ const login = async (req, res) => {
     const token = jwt.sign({user}, process.env.JWT_SECRET,{
         expiresIn: "24h",
       });
-    delete user["password"];
+    user.$set('password', null);
     res.status(200).json({ token, user });
   } catch (err) {
     res.status(500).json({ error: err.message });

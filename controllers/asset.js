@@ -1,6 +1,7 @@
 const Asset  =require( "../models/Asset.js");
 const User =require("../models/User.js");
 const Category =require("../models/Category.js");
+const Share = require("../models/Shares.js");
 
 const cloudinary = require("../configs/cloudinary.js");
 const LikesModel = require("../models/Likes.js");
@@ -357,5 +358,131 @@ const updateAsset = async (req, res) => {
   };
 
 
+  const shareAsset = async (req, res) => {
+    try {
+      const {user} = req.user;
+      const {id} = req.params;
+      const users = await User.find({})
+      const final = shuffle(users);
+      const share = new Share({
+        user_id: user._id,
+        is_forced: false,
+        is_opened: false,
+        asset_id: id,
+        shared_to: final[0]._id,
+      })
+      await share.save()
+              .then(() => {
+                res.status(200).json({
+                  message: 'Asset shared successfully',
+                })
+              })
+              .catch(() => {
+                res.status(500).json({
+                  message: 'Failed to share asset',
+                })
+              })
+    } catch(err){
+      res.status(404).json({ message: err.message });
+    }
+  };
 
-  module.exports ={updateAssetStatus, createAsset,getFeedAssets,getUserAssets,getAllJoy,getAllWack,likeAsset,updateAsset,deleteAsset,deleteOld, dislikeAsset,commentAsset, deleteComment, randomAsset}
+ const getSharedAsset = async (req, res) => {
+  try {
+    const {user} = req.user;
+    const shares = await Share.find({shared_to: user._id});
+    return res.status(200).json(shares);
+  } catch(err){
+    res.status(404).json({ message: err.message });
+  }
+ };
+
+ const getAssetWithId = async (req, res) => {
+  try {
+    const {id} = req.params;
+    const assets = await Asset.find({_id: id});
+    console.log(assets);
+    const output = shuffle(assets);
+    const asset = {...output[0]};
+
+    const {puzzleCount,
+          commitmentCount,
+          statementCount,
+          mysteryCount,
+          normalCount} = cache.mget(['puzzleCount', 'commitmentCount', 'statementCount', 'mysteryCount', 'normalCount'])
+
+    if (commitmentCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.openedWith = 0;
+      cache.set('puzzleCount', puzzleCount + 1);
+    } else if (puzzleCount - commitmentCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.openedWith = 1;
+      cache.set('commitmentCount', commitmentCount + 1);
+    } else if (puzzleCount - statementCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.openedWith = 2;
+      cache.set('statementCount', statementCount + 1);
+    } else if (statementCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.openedWith = 0;
+      cache.set('puzzleCount', puzzleCount + 1);
+    } else if (statementCount - commitmentCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.openedWith = 1;
+      cache.set('commitmentCount', commitmentCount + 1);
+    } else if (commitmentCount - statementCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.openedWith = 2;
+      cache.set('statementCount', statementCount + 1);
+    } else {
+        let typeRandom = Math.random();
+        if (typeRandom % 2 === 0) {
+          asset.openedWith = 0;// puzzle
+          cache.set('puzzleCount', puzzleCount + 1);
+        } else if (typeRandom % 3 === 0) {
+          asset.openedWith = 1; //commitment
+          cache.set('commitmentCount', commitmentCount + 1);
+        } else {
+          asset.openedWith = 2; //statement
+          cache.set('statementCount', statementCount + 1);
+        }
+    }
+    
+  
+    if (mysteryCount - normalCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.isMystery = false
+      cache.set('normalCount', normalCount + 1)
+    } else if (normalCount - mysteryCount > process.env.ASSET_TYPE_THRESHOLD) {
+      asset.isMystery = true
+      cache.set('mysteryCount', mysteryCount + 1)
+    } else {
+      let typeRandom = Math.random();
+
+      if (typeRandom % 2 === 0) {
+        asset.isMystery = false;
+      } else {
+        asset.isMystery = true; 
+      }
+    }
+
+    return res.status(200).json(asset);
+  } catch(err){
+    res.status(404).json({ message: err.message });
+  }
+ }
+
+
+
+  module.exports ={
+    updateAssetStatus,
+    createAsset,
+    getFeedAssets,
+    getUserAssets,
+    getAllJoy,
+    getAllWack,
+    likeAsset,
+    updateAsset,
+    deleteAsset,
+    deleteOld,
+    dislikeAsset,
+    commentAsset,
+    deleteComment,
+    randomAsset,
+    shareAsset,
+    getAssetWithId,
+    getSharedAsset}

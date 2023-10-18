@@ -31,6 +31,10 @@ const commitmentSchema = new  mongoose.Schema(
   category_id: {
     type: mongoose.Schema.Types.ObjectId,ref:"category",
     required: true
+  },
+  suggestion_image: {
+    type: String,
+    required: false
   }
 },
   { timestamps: true }
