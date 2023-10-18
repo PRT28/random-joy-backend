@@ -1,5 +1,6 @@
 const Commitment= require("../models/Commitment.js");
 const shuffle = require('../middleware/helper.js');
+const CommitmentDump = require("../models/commitment_statement_dump.js");
 
 /* CREATE */
 const createCommitmentOrStatement = async (req, res) => {
@@ -127,9 +128,10 @@ const updateCommitment = async (req, res) => {
 const takeAction = async (req, res) => {
   const{id}=req.params;
   try {
-    const commitment = await Commitment.findById(id);
-    commitment.$set('complete', true);
-    commitment.save();
+    const dump = await CommitmentDump.find({id})
+    dump.$set('id_complete', true);
+    dump.$set('time_taken_to_complete', new Date().toISOString());
+    dump.save();
     return res.status(200).json(commitment);
   } catch (err) {
     res.status(404).json({ message: err.message });
@@ -190,5 +192,105 @@ const randomStatement = async (req, res) => {
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
+};
+
+const assignCommitment = async (req, res) => {
+  try{
+    const {
+      is_custom,
+      text,
+      description,
+      asset_for_displayed,
+      asset_displayed
+    } = req.body;
+    const {user} = req.user;
+    const dump = new CommitmentDump({
+      is_custom,
+      text,
+      description,
+      is_commitment: true,
+      is_completed: false,
+      time_taken_to_complete: null,
+      complete_time_range: 24,
+      user_id: user._id,
+      asset_for_displayed,
+      asset_displayed
+    })
+    await dump.save()
+            .then(() => {
+              res.status(200).json({
+                message: 'Commitment assigned successfully',
+              })
+            })
+            .catch(() => {
+              res.status(500).json({
+                message: 'Failed assign Commitment',
+              })
+            });
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
 }
-  module.exports ={createCommitmentOrStatement,getAllCommitment,getAllStatement,deleteCommitment,updateCommitment,takeAction, randomCommitment, randomStatement}
+
+const assignStatement = async (req, res) => {
+  try{
+    const {
+      is_custom,
+      text,
+      description,
+      asset_for_displayed,
+      asset_displayed
+    } = req.body;
+    const {user} = req.user;
+    const dump = new CommitmentDump({
+      is_custom,
+      text,
+      description,
+      is_commitment: false,
+      is_completed: true,
+      time_taken_to_complete: null,
+      complete_time_range: null,
+      user_id: user._id,
+      asset_for_displayed,
+      asset_displayed
+    });
+    await dump.save()
+            .then(() => {
+              res.status(200).json({
+                message: 'Statement assigned successfully',
+              })
+            })
+            .catch(() => {
+              res.status(500).json({
+                message: 'Failed assign Statement',
+              })
+            });
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
+const getCommitments = async (req, res) => {
+  try {
+    const {user} = req.user;
+    const nots = await CommitmentDump.find({user_id: user._id, is_commitment: true});
+    return res.status(200).json(shares);
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
+
+
+  module.exports ={
+    createCommitmentOrStatement,
+    getAllCommitment,
+    getAllStatement,
+    deleteCommitment,
+    updateCommitment,
+    takeAction,
+    randomCommitment,
+    randomStatement,
+    assignCommitment,
+    assignStatement,
+    getCommitments
+  }

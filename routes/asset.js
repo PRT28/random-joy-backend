@@ -40,8 +40,8 @@ router.patch("/status/:id", verifyToken, updateAssetStatus)
 /* DELETE POST */
 router.delete("/delete/:id", verifyToken, deleteAsset)
 router.get('/random/asset', verifyToken, randomAsset);
-router.post('/share/:id', shareAsset);
-router.get('/share', getSharedAsset);
-router.get('/:id', getAssetWithId)
+router.post('/share/:id', verifyToken, shareAsset);
+router.get('/share', verifyToken, getSharedAsset);
+router.get('/:id', verifyToken, getAssetWithId)
 // router.delete("/deleteOld/:id", deleteOld)
 module.exports= router;
