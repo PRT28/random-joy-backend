@@ -58,10 +58,7 @@ const login = async (req, res) => {
       const token = jwt.sign({user}, process.env.JWT_SECRET,{
         expiresIn: "24h",
       });
-      return ({
-         token,
-         user 
-      })
+      return res.status(200).json({ token, user });
     }
     const user = await User.findOne({ email: email});
     if (!user) return res.status(400).json({ msg: "User does not exist. " });
