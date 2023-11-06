@@ -39,6 +39,6 @@ const commitment_dumpSchema = new Schema({
         required:true,
     },
 })
-const commitment_dump = model("puzzle_dump", commitment_dumpSchema );
+const commitment_dump = model("commitment_dump", commitment_dumpSchema );
 
 module.exports = commitment_dump;
