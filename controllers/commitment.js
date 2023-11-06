@@ -237,34 +237,34 @@ const assignStatement = async (req, res) => {
     const {
       is_custom,
       text,
-      description,
-      asset_for_displayed,
-      asset_displayed
+      discription,
+      asset_for_displayed
     } = req.body;
     const {user} = req.user;
+    console.log(user)
     const dump = new CommitmentDump({
       is_custom,
       text,
-      description,
+      discription,
       is_commitment: false,
       is_completed: true,
-      time_taken_to_complete: null,
-      complete_time_range: null,
+      time_taken_to_complete: ' ',
+      complete_time_range: ' ',
       user_id: user._id,
-      asset_for_displayed,
-      asset_displayed
+      asset_for_all: asset_for_displayed,
     });
+    console.log(dump);
     await dump.save()
             .then(() => {
               res.status(200).json({
                 message: 'Statement assigned successfully',
               })
             })
-            .catch(() => {
-              res.status(500).json({
-                message: 'Failed assign Statement',
-              })
-            });
+            // .catch(() => {
+            //   res.status(500).json({
+            //     message: 'Failed assign Statement',
+            //   })
+            // });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }

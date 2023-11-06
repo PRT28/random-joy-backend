@@ -186,7 +186,7 @@ const permanentDeleteUser=async (req, res) => {
 const updateUserInterest = async (req, res) => {
 
   try {
-    const {id} = req.params.id
+    const {id} = req.params
     const interests = req.body
     const user = await User.findById(id);
     user.interests = interests;
@@ -204,8 +204,9 @@ const updateUserInterest = async (req, res) => {
 
 const skipInterest = async (req, res) => {
   try {
-    const {id} = req.params.id;
+    const {id} = req.params;
     const user = await User.findById(id);
+    console.log(user);
     user.is_skipped = true;
     await User.findByIdAndUpdate(id, user).then(() => {
       res.status(201).json({
