@@ -199,22 +199,20 @@ const assignCommitment = async (req, res) => {
     const {
       is_custom,
       text,
-      description,
+      discription,
       asset_for_displayed,
-      asset_displayed
     } = req.body;
     const {user} = req.user;
     const dump = new CommitmentDump({
       is_custom,
       text,
-      description,
+      discription,
       is_commitment: true,
       is_completed: false,
-      time_taken_to_complete: null,
+      time_taken_to_complete: ' ',
       complete_time_range: 24,
       user_id: user._id,
-      asset_for_displayed,
-      asset_displayed
+      asset_for_all: asset_for_displayed,
     })
     await dump.save()
             .then(() => {
@@ -222,11 +220,11 @@ const assignCommitment = async (req, res) => {
                 message: 'Commitment assigned successfully',
               })
             })
-            .catch(() => {
-              res.status(500).json({
-                message: 'Failed assign Commitment',
-              })
-            });
+            // .catch(() => {
+            //   res.status(500).json({
+            //     message: 'Failed assign Commitment',
+            //   })
+            // });
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
