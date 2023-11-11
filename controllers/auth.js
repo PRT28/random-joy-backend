@@ -34,7 +34,7 @@ const User= require("../models/User.js");
   
     });
     const savedUser = await newUser.save();
-    const token = jwt.sign({savedUser}, process.env.JWT_SECRET);
+    const token = jwt.sign({user: savedUser}, process.env.JWT_SECRET);
     const {password: pwd, ...filteredUser} = savedUser 
     return res.status(200).json({ token, user: filteredUser });
   } catch (err) {

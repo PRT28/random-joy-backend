@@ -281,7 +281,8 @@ const updateAsset = async (req, res) => {
 
   const randomAsset = async (req, res) => {
     try {
-      const {user} = req.user;
+      const user = req.user;
+      console.log(user);
       const assets = await Asset.find({
         $and: [
           {category_id: {
