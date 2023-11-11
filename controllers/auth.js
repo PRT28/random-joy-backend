@@ -34,8 +34,9 @@ const User= require("../models/User.js");
   
     });
     const savedUser = await newUser.save();
+    const token = jwt.sign({savedUser}, process.env.JWT_SECRET);
     const {password: pwd, ...filteredUser} = savedUser 
-    res.status(201).json(filteredUser);
+    return res.status(200).json({ token, filteredUser });
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
@@ -66,9 +67,7 @@ const login = async (req, res) => {
     const isMatch = await bcrypt.compare(password, user.password);
     if (!isMatch) return res.status(400).json({ msg: "Invalid credentials. " });
 
-    const token = jwt.sign({user}, process.env.JWT_SECRET,{
-        expiresIn: "24h",
-      });
+    const token = jwt.sign({user}, process.env.JWT_SECRET);
     user.$set('password', null);
     res.status(200).json({ token, user });
   } catch (err) {
