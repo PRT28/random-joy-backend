@@ -8,10 +8,10 @@ const createCommitmentOrStatement = async (req, res) => {
     const {
       is_commitment,
       suggestion_text,
-      category_id,
+      category_text,
       suggestion_image
     } = req.body;
-    console.log(req.body)
+    console.log(req.body);
 
     const { user } = req.user;
     if(is_commitment!==1 && is_commitment!==0 )
@@ -30,7 +30,7 @@ const createCommitmentOrStatement = async (req, res) => {
         complete,
         add_user:user._id,
         mod_user:user._id,
-        category_id,
+        category_text: category_text,
         suggestion_image
       });
         await newCategory.save();
