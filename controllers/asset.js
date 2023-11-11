@@ -282,6 +282,7 @@ const updateAsset = async (req, res) => {
   const randomAsset = async (req, res) => {
     try {
       const user = req.user;
+      const {type} = req.query
       console.log(user);
       const assets = await Asset.find({
         $and: [
@@ -303,55 +304,70 @@ const updateAsset = async (req, res) => {
             mysteryCount,
             normalCount} = cache.mget(['puzzleCount', 'commitmentCount', 'statementCount', 'mysteryCount', 'normalCount'])
 
-      if (commitmentCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
+      if (type === 0) {
         asset.openedWith = 0;
         cache.set('puzzleCount', puzzleCount + 1);
-      } else if (puzzleCount - commitmentCount > process.env.ASSET_TYPE_THRESHOLD) {
+      } else if (type === 1) {
         asset.openedWith = 1;
         cache.set('commitmentCount', commitmentCount + 1);
-      } else if (puzzleCount - statementCount > process.env.ASSET_TYPE_THRESHOLD) {
-        asset.openedWith = 2;
-        cache.set('statementCount', statementCount + 1);
-      } else if (statementCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
-        asset.openedWith = 0;
-        cache.set('puzzleCount', puzzleCount + 1);
-      } else if (statementCount - commitmentCount > process.env.ASSET_TYPE_THRESHOLD) {
-        asset.openedWith = 1;
-        cache.set('commitmentCount', commitmentCount + 1);
-      } else if (commitmentCount - statementCount > process.env.ASSET_TYPE_THRESHOLD) {
+      } else if (type === 2) {
         asset.openedWith = 2;
         cache.set('statementCount', statementCount + 1);
       } else {
-          let typeRandom = Math.random();
-          if (typeRandom % 2 === 0) {
-            asset.openedWith = 0;// puzzle
-            cache.set('puzzleCount', puzzleCount + 1);
-          } else if (typeRandom % 3 === 0) {
-            asset.openedWith = 1; //commitment
-            cache.set('commitmentCount', commitmentCount + 1);
-          } else {
-            asset.openedWith = 2; //statement
-            cache.set('statementCount', statementCount + 1);
-          }
+        if (commitmentCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.openedWith = 0;
+          cache.set('puzzleCount', puzzleCount + 1);
+        } else if (puzzleCount - commitmentCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.openedWith = 1;
+          cache.set('commitmentCount', commitmentCount + 1);
+        } else if (puzzleCount - statementCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.openedWith = 2;
+          cache.set('statementCount', statementCount + 1);
+        } else if (statementCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.openedWith = 0;
+          cache.set('puzzleCount', puzzleCount + 1);
+        } else if (statementCount - commitmentCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.openedWith = 1;
+          cache.set('commitmentCount', commitmentCount + 1);
+        } else if (commitmentCount - statementCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.openedWith = 2;
+          cache.set('statementCount', statementCount + 1);
+        } else {
+            let typeRandom = Math.random();
+            if (typeRandom % 2 === 0) {
+              asset.openedWith = 0;// puzzle
+              cache.set('puzzleCount', puzzleCount + 1);
+            } else if (typeRandom % 3 === 0) {
+              asset.openedWith = 1; //commitment
+              cache.set('commitmentCount', commitmentCount + 1);
+            } else {
+              asset.openedWith = 2; //statement
+              cache.set('statementCount', statementCount + 1);
+            }
+        }
       }
       
-    
-      if (mysteryCount - normalCount > process.env.ASSET_TYPE_THRESHOLD) {
-        asset.isMystery = false
-        cache.set('normalCount', normalCount + 1)
-      } else if (normalCount - mysteryCount > process.env.ASSET_TYPE_THRESHOLD) {
+      if(type === 4) {
         asset.isMystery = true
         cache.set('mysteryCount', mysteryCount + 1)
       } else {
-        let typeRandom = Math.random();
-
-        if (typeRandom % 2 === 0) {
-          asset.isMystery = false;
+        if (mysteryCount - normalCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.isMystery = false
+          cache.set('normalCount', normalCount + 1)
+        } else if (normalCount - mysteryCount > process.env.ASSET_TYPE_THRESHOLD) {
+          asset.isMystery = true
+          cache.set('mysteryCount', mysteryCount + 1)
         } else {
-          asset.isMystery = true; 
+          let typeRandom = Math.random();
+  
+          if (typeRandom % 2 === 0) {
+            asset.isMystery = false;
+          } else {
+            asset.isMystery = true; 
+          }
         }
+  
       }
-
       return res.status(200).json(asset);
     } catch(err){
       res.status(404).json({ message: err.message });
@@ -363,6 +379,7 @@ const updateAsset = async (req, res) => {
     try {
       const {user} = req.user;
       const {id} = req.params;
+      console.log(user);
       const users = await User.find({})
       const final = shuffle(users);
       const share = new Share({
@@ -376,11 +393,6 @@ const updateAsset = async (req, res) => {
               .then(() => {
                 res.status(200).json({
                   message: 'Asset shared successfully',
-                })
-              })
-              .catch(() => {
-                res.status(500).json({
-                  message: 'Failed to share asset',
                 })
               })
     } catch(err){
