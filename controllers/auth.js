@@ -54,7 +54,8 @@ const login = async (req, res) => {
         status: true,
         zip_code: 0,
         gender: 'male',
-        role: 0
+        role: 0,
+        _id: '41224d776a326fb40f000001'
       }
       const token = jwt.sign({user}, process.env.JWT_SECRET,{
         expiresIn: "24h",

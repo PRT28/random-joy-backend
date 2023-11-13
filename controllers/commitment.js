@@ -11,7 +11,6 @@ const createCommitmentOrStatement = async (req, res) => {
       category_text,
       suggestion_image
     } = req.body;
-    console.log(req.body);
 
     const { user } = req.user;
     if(is_commitment!==1 && is_commitment!==0 )
