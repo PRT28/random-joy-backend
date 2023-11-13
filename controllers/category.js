@@ -9,6 +9,7 @@ const createCategory = async (req, res) => {
       category_description
     } = req.body;
     const { user } = req.user;
+    console.log(user);
     if(user.role==2)
     {
       return res.status(400).json({ message: "Only Admins Are allowed to add Category." });

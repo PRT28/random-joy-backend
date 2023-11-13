@@ -7,7 +7,7 @@ const  verifyToken  = require( "../middleware/auth.js");
 const router = express.Router();
 
 /* CREATE */
-router.post("/",createCategory);
+router.post("/", verifyToken,createCategory);
 
 /* GET */
 router.get("/", verifyToken, getAllCategory);
