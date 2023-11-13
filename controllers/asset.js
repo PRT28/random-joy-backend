@@ -283,6 +283,7 @@ const updateAsset = async (req, res) => {
     try {
       const user = req.user;
       const {type} = req.query
+      type=parseInt(type)
       console.log(user);
       const assets = await Asset.find({
         $and: [
