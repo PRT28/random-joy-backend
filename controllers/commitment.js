@@ -86,9 +86,8 @@ const getAllCommitment = async (req, res) => {
       return res.status(400).json({ message: "Only Admins Are allowed to Delete." });
     }
     else{
-      await Commitment.findByIdAndDelete(id);
-      const cat=Commitment.find({})
-      res.status(200).json(cat);
+      await Commitment.findByIdAndDelete(id).
+              then(() => res.status(200).json({message: 'deleted successfully'}));
     }
     }catch (err) {
       res.status(404).json({ message: err.message });
