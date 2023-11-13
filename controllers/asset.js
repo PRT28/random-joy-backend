@@ -282,9 +282,8 @@ const updateAsset = async (req, res) => {
   const randomAsset = async (req, res) => {
     try {
       const user = req.user;
-      const {type} = req.query
-      type=parseInt(type)
-      console.log(user);
+      const {type: typeString} = req.query
+      const type = parseInt(typeString);
       const assets = await Asset.find({
         $and: [
           {category_id: {
@@ -308,12 +307,21 @@ const updateAsset = async (req, res) => {
       if (type === 0) {
         asset.openedWith = 0;
         cache.set('puzzleCount', puzzleCount + 1);
+        asset.isMystery = false
+        cache.set('normalCount', normalCount + 1)
+        return res.status(200).json(asset);
       } else if (type === 1) {
         asset.openedWith = 1;
         cache.set('commitmentCount', commitmentCount + 1);
+        asset.isMystery = false
+        cache.set('normalCount', normalCount + 1)
+        return res.status(200).json(asset);
       } else if (type === 2) {
         asset.openedWith = 2;
         cache.set('statementCount', statementCount + 1);
+        asset.isMystery = false
+        cache.set('normalCount', normalCount + 1)
+        return res.status(200).json(asset);
       } else {
         if (commitmentCount - puzzleCount > process.env.ASSET_TYPE_THRESHOLD) {
           asset.openedWith = 0;
@@ -348,7 +356,7 @@ const updateAsset = async (req, res) => {
         }
       }
       
-      if(type === 4) {
+      if(type === 3) {
         asset.isMystery = true
         cache.set('mysteryCount', mysteryCount + 1)
       } else {
