@@ -36,7 +36,7 @@ const commitment_dumpSchema = new Schema({
     },
     asset_for_all: {
         type: String,
-        required:true,
+        required:false,
     },
 })
 const commitment_dump = model("commitment_dump", commitment_dumpSchema );

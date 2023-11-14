@@ -270,7 +270,7 @@ const getCommitments = async (req, res) => {
   try {
     const {user} = req.user;
     const nots = await CommitmentDump.find({user_id: user._id, is_commitment: true});
-    return res.status(200).json(shares);
+    return res.status(200).json(nots);
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
