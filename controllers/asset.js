@@ -436,7 +436,10 @@ const updateAsset = async (req, res) => {
   try {
     const {id} = req.params;
     const assets = await Asset.find({_id: id});
-    console.log(assets);
+    const dump = await Share.findById(id)
+    dump['is_opened']=true;
+    console.log(dump)
+    dump.save();
     const output = shuffle(assets);
     const asset = {...output[0]};
 
