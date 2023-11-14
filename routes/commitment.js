@@ -18,7 +18,7 @@ router.get("/commitment",verifyToken, getAllCommitment);
 router.get("/statement",verifyToken, getAllStatement);
 router.delete("/delete/:id",verifyToken, deleteCommitment)
 router.put("/update/:id",verifyToken, updateCommitment)
-router.patch("/complete",verifyToken, takeAction)
+router.patch("/complete/:id",verifyToken, takeAction)
 router.get("/random/commitment", verifyToken, randomCommitment);
 router.get("/random/statement", verifyToken, randomStatement);
 router.get("/user/commitment", verifyToken, getCommitments);

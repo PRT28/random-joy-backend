@@ -126,11 +126,12 @@ const updateCommitment = async (req, res) => {
 const takeAction = async (req, res) => {
   const{id}=req.params;
   try {
-    const dump = await CommitmentDump.find({id})
-    dump.$set('id_complete', true);
-    dump.$set('time_taken_to_complete', new Date().toISOString());
+    const dump = await CommitmentDump.findById(id)
+    dump['is_completed']=true;
+    dump['time_taken_to_complete']= new Date().toISOString();
+    console.log(dump)
     dump.save();
-    return res.status(200).json(commitment);
+    return res.status(200).json({message: 'Commitment completed successfully'});
   } catch (err) {
     res.status(404).json({ message: err.message });
   }
@@ -269,7 +270,7 @@ const assignStatement = async (req, res) => {
 const getCommitments = async (req, res) => {
   try {
     const {user} = req.user;
-    const nots = await CommitmentDump.find({user_id: user._id, is_commitment: true});
+    const nots = await CommitmentDump.find({user_id: user._id, is_commitment: true, is_completed: false});
     return res.status(200).json(nots);
   } catch (err) {
     res.status(404).json({ message: err.message });
