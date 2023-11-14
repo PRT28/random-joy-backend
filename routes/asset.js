@@ -15,7 +15,8 @@ const {
     randomAsset,
     shareAsset,
     getAssetWithId,
-    getSharedAsset} =require( "../controllers/asset.js");
+    getSharedAsset,
+    openShare} =require( "../controllers/asset.js");
 const multer=require("multer")
 const  verifyToken  = require( "../middleware/auth.js");
 const upload = multer({ storage: multer.diskStorage({}),
@@ -41,6 +42,7 @@ router.patch("/status/:id", verifyToken, updateAssetStatus)
 router.delete("/delete/:id", verifyToken, deleteAsset)
 router.get('/random/asset', verifyToken, randomAsset);
 router.post('/share/:id', verifyToken, shareAsset);
+router.patch('/share/:id', verifyToken, openShare);
 router.get('/share', verifyToken, getSharedAsset);
 router.get('/:id', verifyToken, getAssetWithId)
 // router.delete("/deleteOld/:id", deleteOld)

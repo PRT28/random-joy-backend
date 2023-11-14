@@ -412,12 +412,25 @@ const updateAsset = async (req, res) => {
  const getSharedAsset = async (req, res) => {
   try {
     const {user} = req.user;
-    const shares = await Share.find({shared_to: user._id});
+    const shares = await Share.find({shared_to: user._id, is_openend: false});
     return res.status(200).json(shares);
   } catch(err){
     res.status(404).json({ message: err.message });
   }
  };
+
+ const openShare = async (req, res) => {
+  const{id}=req.params;
+  try {
+    const dump = await Share.findById(id)
+    dump['is_opened']=true;
+    console.log(dump)
+    dump.save();
+    return res.status(200).json({message: 'Asset opened successfully'});
+  } catch (err) {
+    res.status(404).json({ message: err.message });
+  }
+}
 
  const getAssetWithId = async (req, res) => {
   try {
@@ -507,4 +520,5 @@ const updateAsset = async (req, res) => {
     randomAsset,
     shareAsset,
     getAssetWithId,
-    getSharedAsset}
+    getSharedAsset,
+    openShare}
