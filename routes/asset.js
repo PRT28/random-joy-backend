@@ -16,6 +16,7 @@ const {
     shareAsset,
     getAssetWithId,
     getSharedAsset,
+    shareCommitmentAsset,
     openShare} =require( "../controllers/asset.js");
 const multer=require("multer")
 const  verifyToken  = require( "../middleware/auth.js");
@@ -42,6 +43,7 @@ router.patch("/status/:id", verifyToken, updateAssetStatus)
 router.delete("/delete/:id", verifyToken, deleteAsset)
 router.get('/random/asset', verifyToken, randomAsset);
 router.post('/share/:id', verifyToken, shareAsset);
+router.post('/share/commitment/:id/:commitId', verifyToken, shareCommitmentAsset)
 router.patch('/share/:id', verifyToken, openShare);
 router.get('/share', verifyToken, getSharedAsset);
 router.get('/:id', verifyToken, getAssetWithId)

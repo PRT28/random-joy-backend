@@ -1,4 +1,5 @@
 const Puzzle = require("../models/Puzzle")
+const User = require('../models/User.js');
 const shuffle = require('../middleware/helper.js');
 
 const addPuzzle = async (req, res) => {
@@ -158,9 +159,11 @@ const getAllPuzzle = async (req, res) => {
 
   const randomPuzzle = async (req, res) => {
     try {
+    const {user} = req.user
       const assets = await Puzzle.find({});
       const output = shuffle(assets);
       const asset = output[0];
+      await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
 
       return res.status(200).json(asset);
     } catch(err){

@@ -99,7 +99,7 @@ const getAllUser = async (req, res) => {
 
 const changeUserStatus = async (req, res) => {
   try {
-    const{id}=req.params.id
+    const{id}=req.params
     const user = await User.findById(id);
     user.status = !user.status;
     await User.findByIdAndUpdate(id, user)
@@ -120,7 +120,7 @@ const authDetails = (req, res) => {
 
 const updateUser= async (req, res) => {
   try {
-    const{id}=req.params.id
+    const{id}=req.params
     const {
       username,
       email,
@@ -129,11 +129,6 @@ const updateUser= async (req, res) => {
       zip_code,
     } = req.body;
     const { user } = req.user;
-    if(!user){
-      return  res.status(403).json({"message":"unauthorize"})
-    }
-    const user_present = await User.findById(id);
-    if((user_present._id===user._id)||(user_present.role>user.role ))
     {
       await User.findByIdAndUpdate(id,{
         username,
@@ -150,17 +145,13 @@ const updateUser= async (req, res) => {
           });
       })
     }
-    else{
-        res.status(403).json({"message":"unauthorize"})
-    }
-    
   } catch (err) {
     res.status(500).json({ error: err.message });
   }
 }
 const permanentDeleteUser=async (req, res) => {
   try {
-    const{id}=req.params.id
+    const{id}=req.params
     const { user } = req.user;
     const user_present = await User.findById(id);
     if((user_present._id===user._id)||(user_present.role>user.role ))

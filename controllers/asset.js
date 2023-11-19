@@ -8,6 +8,7 @@ const LikesModel = require("../models/Likes.js");
 const DisLikesModel = require("../models/Dislike.js");
 const commentModel = require("../models/Comments.js");
 const shuffle = require('../middleware/helper.js');
+const CommitmentDump = require('../models/commitment_statement_dump.js');
 
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
@@ -389,6 +390,36 @@ const updateAsset = async (req, res) => {
       const {user} = req.user;
       const {id} = req.params;
       console.log(user);
+      await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
+      const users = await User.find({})
+      const final = shuffle(users);
+      const share = new Share({
+        user_id: user._id,
+        is_forced: false,
+        is_opened: false,
+        asset_id: id,
+        shared_to: final[0]._id,
+      })
+      await share.save()
+              .then(() => {
+                res.status(200).json({
+                  message: 'Asset shared successfully',
+                })
+              })
+    } catch(err){
+      res.status(404).json({ message: err.message });
+    }
+  };
+
+  const shareCommitmentAsset = async (req, res) => {
+    try {
+      const {user} = req.user;
+      const {id, commitId} = req.params;
+      console.log(user);
+      await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
+      const dump = await CommitmentDump.findById(commitId)
+      dump['is_completed']=true;
+      dump['time_taken_to_complete']= new Date().toISOString();
       const users = await User.find({})
       const final = shuffle(users);
       const share = new Share({
@@ -522,6 +553,7 @@ const updateAsset = async (req, res) => {
     deleteComment,
     randomAsset,
     shareAsset,
+    shareCommitmentAsset,
     getAssetWithId,
     getSharedAsset,
     openShare}

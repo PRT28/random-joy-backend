@@ -1,6 +1,7 @@
 const Commitment= require("../models/Commitment.js");
 const shuffle = require('../middleware/helper.js');
 const CommitmentDump = require("../models/commitment_statement_dump.js");
+const User = require('../models/User.js');
 
 /* CREATE */
 const createCommitmentOrStatement = async (req, res) => {
@@ -125,10 +126,13 @@ const updateCommitment = async (req, res) => {
 };
 const takeAction = async (req, res) => {
   const{id}=req.params;
+  const {user} = req.user
   try {
     const dump = await CommitmentDump.findById(id)
+    await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
     dump['is_completed']=true;
     dump['time_taken_to_complete']= new Date().toISOString();
+    
     console.log(dump)
     dump.save();
     return res.status(200).json({message: 'Commitment completed successfully'});
@@ -239,6 +243,7 @@ const assignStatement = async (req, res) => {
     } = req.body;
     const {user} = req.user;
     console.log(user)
+    await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
     const dump = new CommitmentDump({
       is_custom,
       text,
