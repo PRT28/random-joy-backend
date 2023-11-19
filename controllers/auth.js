@@ -33,6 +33,14 @@ const User= require("../models/User.js");
       preferences: 0
   
     });
+    const emailExistUser = await User.findOne({email});
+    const usernameExists = await User.findOne({username})
+    if (emailExistUser) {
+      return res.status(500).json({error: 'Email already exists'});
+    }
+    if (usernameExists) {
+      return res.status(500).json({error: 'Username already exists'});
+    }
     const savedUser = await newUser.save();
     const token = jwt.sign({user: savedUser}, process.env.JWT_SECRET);
     const {password: pwd, ...filteredUser} = savedUser 
