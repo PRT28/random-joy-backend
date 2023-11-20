@@ -163,7 +163,9 @@ const getAllPuzzle = async (req, res) => {
       const assets = await Puzzle.find({});
       const output = shuffle(assets);
       const asset = output[0];
-      await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
+      const tempuser = await User.findById(user._id)
+    await User.findByIdAndUpdate(user._id, {completed_task: tempuser.completed_task + 1}).
+          then(data => console.log(data))
 
       return res.status(200).json(asset);
     } catch(err){

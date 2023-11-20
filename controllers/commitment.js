@@ -129,7 +129,9 @@ const takeAction = async (req, res) => {
   const {user} = req.user
   try {
     const dump = await CommitmentDump.findById(id)
-    await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
+    const tempuser = await User.findById(user._id)
+    await User.findByIdAndUpdate(user._id, {completed_task: tempuser.completed_task + 1}).
+          then(data => console.log(data))
     dump['is_completed']=true;
     dump['time_taken_to_complete']= new Date().toISOString();
     
@@ -243,7 +245,9 @@ const assignStatement = async (req, res) => {
     } = req.body;
     const {user} = req.user;
     console.log(user)
-    await User.findByIdAndUpdate(user._id, {completed_task: user.completed_task + 1})
+    const tempuser = await User.findById(user._id)
+    await User.findByIdAndUpdate(user._id, {completed_task: tempuser.completed_task + 1}).
+          then(data => console.log(data))
     const dump = new CommitmentDump({
       is_custom,
       text,
@@ -255,7 +259,7 @@ const assignStatement = async (req, res) => {
       user_id: user._id,
       asset_for_all: asset_for_displayed,
     });
-    console.log(dump);
+    // console.log(dump);
     await dump.save()
             .then(() => {
               res.status(200).json({
