@@ -143,7 +143,7 @@ const updateUser= async (req, res) => {
       password,
       gender,
       zip_code,
-      status
+      preferences
     } = req.body;
     {
       await User.findByIdAndUpdate(id,{
@@ -152,7 +152,7 @@ const updateUser= async (req, res) => {
         password,
         gender,
         zip_code,
-        status
+        preferences
       } )
       .then(() => {
           res.status(201).json({
