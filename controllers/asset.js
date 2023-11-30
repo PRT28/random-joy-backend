@@ -16,8 +16,17 @@ const cache = new NodeCache();
 /* CREATE */
  const createAsset = async (req, res) => {
   try {
-    const { description,keyword_name,name,category_name,upload_type,asset_type,asset_category} = req.body;
-    const category=await Category.findOne({category_title:category_name});
+    const { 
+      description,
+      keyword_name,
+      name,
+      category_id,
+      upload_type,
+      asset_type,
+      asset_category,
+      sub_category_id,
+      sub_sub_category_id,
+      is_announcemnet} = req.body;
     const { user } = req.user
     if(!category) {
       return res.status(400).json({ message: "Invalid Category."});
@@ -50,12 +59,17 @@ const cache = new NodeCache();
       const newPost = new Asset({
         user_id:user._id,
         description,
-        category_id:category.id,
+        category_id,
         keyword_name,
         name,
         url:upload,
         asset_category,
-        asset_type:asset_type
+        sub_category_id,
+        sub_sub_category_id,
+        is_announcemnet,
+        asset_type:asset_type,
+        add_user: user._id,
+        mod_user: user._id
       });
       await newPost.save();
       res.status(201).json(newPost);

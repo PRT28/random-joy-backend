@@ -370,7 +370,7 @@
                 "name": {
                   "example": "any"
                 },
-                "category_name": {
+                "category_id": {
                   "example": "any"
                 },
                 "upload_type": {
@@ -380,6 +380,15 @@
                   "example": "any"
                 },
                 "asset_category": {
+                  "example": "any"
+                },
+                "sub_category_id": {
+                  "example": "any"
+                },
+                "sub_sub_category_id": {
+                  "example": "any"
+                },
+                "is_announcemnet": {
                   "example": "any"
                 }
               }
