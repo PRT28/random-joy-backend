@@ -172,6 +172,7 @@ const permanentDeleteUser=async (req, res) => {
     const{id}=req.params
     const { user } = req.user;
     const user_present = await User.findById(id);
+    console.log(user, user_present)
     if((user_present._id===user._id)||(user_present.role>user.role ))
     {
       await User.findByIdAndDelete(id)
@@ -183,7 +184,7 @@ const permanentDeleteUser=async (req, res) => {
       })
     }
     else{
-        res.status(403).json({"message":"unauthorize"})
+        res.status(403).json({message: "You are not unauthorized to perform this action."})
     }
 
 
