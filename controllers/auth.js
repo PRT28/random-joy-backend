@@ -146,14 +146,16 @@ const updateUser= async (req, res) => {
       preferences
     } = req.body;
     {
+      const salt = await bcrypt.genSalt();
+      const passwordHash = await bcrypt.hash(password, salt);
       await User.findByIdAndUpdate(id,{
         username,
         email,
-        password,
+        password: passwordHash,
         gender,
         zip_code,
         preferences
-      } )
+      })
       .then(() => {
           res.status(201).json({
             success: true,

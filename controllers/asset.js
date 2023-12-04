@@ -28,7 +28,7 @@ const cache = new NodeCache();
       sub_sub_category_id,
       is_announcemnet} = req.body;
     const { user } = req.user
-    if(!category) {
+    if(!category_id) {
       return res.status(400).json({ message: "Invalid Category."});
     }
     if(!user) {
@@ -41,11 +41,11 @@ const cache = new NodeCache();
     else if(upload_type===1){
 
       if(asset_category === 0) {
-        if(!upload)upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
+        if(!upload)upload = await cloudinary.v2.uploader.upload(req.file.url,{folder:"asset"});
       }else if (asset_category === 1){
-        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joy"});
+        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.url,{folder:"joy"});
       } else if (asset_category === 2) {
-        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"whack"});
+        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.url,{folder:"whack"});
       } else {
         return res.status(400).json({ message: "Wrong asset category." });
       }
@@ -79,7 +79,7 @@ const cache = new NodeCache();
       }  else{
         const newPost = new Asset({
           user_id:user._id,
-          category_id:category.id,
+          category_id:category_id,
           url:upload,
           name,
           asset_category,

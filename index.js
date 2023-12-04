@@ -13,6 +13,7 @@ const swaggerFile = require('./swagger_output.json')
 const multer = require("multer");
 const helmet =require("helmet");
 const NodeCache = require( "node-cache" );
+const fileUpload = require("express-fileupload");
 
 const cache = new NodeCache();
 
@@ -24,6 +25,7 @@ cache.set('normalCount', 0);
 
 
 app.use(helmet());
+app.use(fileUpload());
 const authRoutes = require("./routes/auth.js");
 const assetRoutes = require("./routes/asset.js");
 const categoryRoutes = require("./routes/category.js");
