@@ -18,10 +18,7 @@ const {
     getSharedAsset,
     shareCommitmentAsset,
     openShare} =require( "../controllers/asset.js");
-const multer=require("multer")
 const  verifyToken  = require( "../middleware/auth.js");
-const upload = multer({ storage: multer.diskStorage({}),
-limits: { fileSize: 50000000 } });
 
 const router = express.Router();
 
@@ -31,7 +28,7 @@ router.get("/joy", verifyToken, getAllJoy);
 router.get("/wack", verifyToken, getAllWack);
 router.get("/user/:user_id", verifyToken, getUserAssets);
 /* POST */
-router.post("/", verifyToken, upload.single("filepath"), createAsset)
+router.post("/", verifyToken, createAsset)
 /* UPDATE */
 router.put("/update/:id", verifyToken, updateAsset);
 router.post("/like/:id", verifyToken, likeAsset);

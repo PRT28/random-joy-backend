@@ -4,13 +4,10 @@ if (process.env.NODE_ENV !== "production") {
 const express = require("express");
 const cors = require("cors");
 const mongoose = require("mongoose");
-const bcrypt = require("bcryptjs");
 const app = express();
-const jwt = require("jsonwebtoken");
 const cookieParser = require("cookie-parser");
 const swaggerUi = require('swagger-ui-express')
 const swaggerFile = require('./swagger_output.json')
-const multer = require("multer");
 const helmet =require("helmet");
 const NodeCache = require( "node-cache" );
 const fileUpload = require("express-fileupload");
@@ -26,6 +23,15 @@ cache.set('normalCount', 0);
 
 app.use(helmet());
 app.use(fileUpload());
+var corsOptions = {
+  credentials: true,
+  origin: true
+};
+
+app.use(cors(corsOptions));
+app.use(express.json());
+app.use(cookieParser());
+
 const authRoutes = require("./routes/auth.js");
 const assetRoutes = require("./routes/asset.js");
 const categoryRoutes = require("./routes/category.js");
@@ -35,14 +41,8 @@ const puzzleRoutes = require('./routes/puzzle.js');
 const reportRoutes = require('./routes/report.js');
 const keywordsRoute = require('./routes/keyword.js');
 const commitmentAndStatementRoutes = require('./routes/commitment.js');
-var corsOptions = {
-  credentials: true,
-  origin: true
-};
 
-app.use(cors(corsOptions));
-app.use(express.json());
-app.use(cookieParser());
+
 const CONNECTION_URL = process.env.DB_URL;
 const PORT = process.env.PORT || 80;
 app.use("/auth", authRoutes);

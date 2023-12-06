@@ -528,10 +528,13 @@
                 "keyword_name": {
                   "example": "any"
                 },
-                "category_name": {
+                "name": {
                   "example": "any"
                 },
-                "name": {
+                "category_id": {
+                  "example": "any"
+                },
+                "upload_type": {
                   "example": "any"
                 },
                 "asset_type": {
@@ -540,7 +543,13 @@
                 "asset_category": {
                   "example": "any"
                 },
-                "upload_type": {
+                "sub_category_id": {
+                  "example": "any"
+                },
+                "sub_sub_category_id": {
+                  "example": "any"
+                },
+                "is_announcemnet": {
                   "example": "any"
                 }
               }
@@ -559,9 +568,6 @@
           },
           "403": {
             "description": "Forbidden"
-          },
-          "404": {
-            "description": "Not Found"
           },
           "500": {
             "description": "Internal Server Error"

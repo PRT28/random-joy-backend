@@ -12,6 +12,7 @@ const CommitmentDump = require('../models/commitment_statement_dump.js');
 
 const NodeCache = require( "node-cache" );
 const cache = new NodeCache();
+const fs = require('fs');
 
 /* CREATE */
  const createAsset = async (req, res) => {
@@ -35,26 +36,32 @@ const cache = new NodeCache();
       return res.status(400).json({ message: "invalid user" })
     }
     let upload=null;
-    if(upload_type===0){
+    if(upload_type==='0'){
         upload=req.body.url;
     }
-    else if(upload_type===1){
+    else if(upload_type==='1'){
 
-      if(asset_category === 0) {
-        if(!upload)upload = await cloudinary.v2.uploader.upload(req.file.url,{folder:"asset"});
-      }else if (asset_category === 1){
-        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.url,{folder:"joy"});
-      } else if (asset_category === 2) {
-        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.url,{folder:"whack"});
+      fs.writeFile(`temp/${req.files.url.name}`, req.files.url.data, "binary", (err) => {
+        if (!err) console.log(`${req.files.url.name} created successfully!`);
+      })
+
+      if(asset_category === '0') {
+        upload = await cloudinary.v2.uploader.upload(`temp/${req.files.url.name}`,{folder:"asset"});
+      }else if (asset_category === '1'){
+        upload = await cloudinary.v2.uploader.upload(`temp/${req.files.url.name}`,{folder:"joy"});
+      } else if (asset_category === '2') {
+        upload = await cloudinary.v2.uploader.upload(`temp/${req.files.url.name}`,{folder:"whack"});
       } else {
         return res.status(400).json({ message: "Wrong asset category." });
       }
       upload=upload.secure_url;
+
+      console.log(upload)
     }
     else{
       return res.status(400).json({ message: "Wrong asset category." });
     }
-    if(asset_category === 0)
+    if(asset_category === '0')
     {
       const newPost = new Asset({
         user_id:user._id,
@@ -79,16 +86,24 @@ const cache = new NodeCache();
       }  else{
         const newPost = new Asset({
           user_id:user._id,
-          category_id:category_id,
-          url:upload,
+          description,
+          category_id,
+          keyword_name,
           name,
+          url:upload,
           asset_category,
-          asset_type:asset_type
+          sub_category_id,
+          sub_sub_category_id,
+          is_announcemnet,
+          asset_type:asset_type,
+          add_user: user._id,
+          mod_user: user._id
         });
        const joyOrWack= await newPost.save();
         res.status(201).json(joyOrWack);
       }
     }
+    fs.readdirSync('temp/').forEach(f => fs.rmSync(`temp/${f}`));
    
   } catch (err) {
     res.status(409).json({ message: err.message });
@@ -180,43 +195,64 @@ const getAllWack = async (req, res) => {
 const updateAsset = async (req, res) => {
   try {
     const {id} = req.params;
-    const { description,keyword_name,category_name,url,name,asset_type,asset_category,upload_type} = req.body;
-
-    const asset = await Asset.findById(id);
-    if(!asset){
-      res.status(404).json({ message:"Asset doesnot exist."});
-    }
+    const { 
+      description,
+      keyword_name,
+      name,
+      category_id,
+      upload_type,
+      asset_type,
+      asset_category,
+      sub_category_id,
+      sub_sub_category_id,
+      is_announcemnet} = req.body;
     const { user } = req.user
-    const category=await Category.findOne({category_title:category_name});
-    if(!category) {
+    if(!category_id) {
       return res.status(400).json({ message: "Invalid Category."});
     }
+    if(!user) {
+      return res.status(400).json({ message: "invalid user" })
+    }
     let upload=null;
-    if(upload_type===0){
+    if(upload_type==='0'){
         upload=req.body.url;
     }
-    else if(upload_type===1){
+    else if(upload_type==='1'){
 
-      if(asset_category === 0) {
-        if(!upload)upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"asset"});
-      }else if (asset_category === 1){
-        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"joy"});
-      } else if (asset_category === 2) {
-        if(!upload) upload = await cloudinary.v2.uploader.upload(req.file.path,{folder:"whack"});
+      fs.writeFile(`temp/${req.files.url.name}`, req.files.url.data, "binary", (err) => {
+        if (!err) console.log(`${req.files.url.name} created successfully!`);
+      })
+
+      if(asset_category === '0') {
+        upload = await cloudinary.v2.uploader.upload(`temp/${req.files.url.name}`,{folder:"asset"});
+      }else if (asset_category === '1'){
+        upload = await cloudinary.v2.uploader.upload(`temp/${req.files.url.name}`,{folder:"joy"});
+      } else if (asset_category === '2') {
+        upload = await cloudinary.v2.uploader.upload(`temp/${req.files.url.name}`,{folder:"whack"});
       } else {
         return res.status(400).json({ message: "Wrong asset category." });
       }
       upload=upload.secure_url;
+
+      console.log(upload)
+    }
+    else{
+      return res.status(400).json({ message: "Wrong asset category." });
     }
       await Asset.findByIdAndUpdate(id, {
         user_id:user._id,
         description,
-        name,
-        category_id:category.id,
+        category_id,
         keyword_name,
+        name,
         url:upload,
         asset_category,
-        asset_type
+        sub_category_id,
+        sub_sub_category_id,
+        is_announcemnet,
+        asset_type:asset_type,
+        add_user: user._id,
+        mod_user: user._id
       }).then(() => res.status(201).json({
         success: true,
         message: "Asset updated successfully"
@@ -246,11 +282,15 @@ const updateAsset = async (req, res) => {
       const {id} = req.params;
       
       const asset = await Asset.findById(id)
+      
+      console.log(asset);
       const oldUrl = asset.url;
       const getPublicId = (oldUrl) => oldUrl.split("/").pop().split(".")[0];
       await Asset.findByIdAndDelete(id)
       const deleted = await cloudinary.v2.uploader.destroy(getPublicId(oldUrl));
-      res.status(200).json(allasset);
+      res.status(200).json({
+        message: 'Asset Deleted Successfully',
+      });
     } catch (err) {
       res.status(404).json({ message: err.message });
     }
